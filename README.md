@@ -35,6 +35,6 @@ Alle CSS-Klassen beginnen mit `dc-` → keine Kollision mit bestehendem CSS.
 
 ## Tests
 ```
-node --test tests/          # Logik (37 Tests)
-node tests/e2e.mjs          # Browser, benötigt Playwright
+npm test                    # Logik (37 Tests)
+npm run test:e2e            # Browser, benötigt Playwright
 ```

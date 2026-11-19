@@ -2,7 +2,7 @@
   "name": "dokucheckliste-pdok",
   "private": true,
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test tests/*.test.js",
     "test:e2e": "node tests/e2e.mjs"
   },
   "devDependencies": {}
