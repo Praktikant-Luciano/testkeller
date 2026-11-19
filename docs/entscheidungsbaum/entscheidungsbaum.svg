@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="2450" viewBox="0 0 1150 2450" font-family="Arial, sans-serif">
+<defs><marker id="pfeil" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6E6F70"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<rect x="0" y="0" width="1150" height="6" fill="#94BF05"/>
+<path d="M550.0,1600 L710.0,1600" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="562.0" y="1592" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein</text>
+<path d="M930.0,1600 L1000,1600 L1000,1500 L420,1500 L420,1540.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="1008" y="1560" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein · in Frage 7 bleiben</text>
+<path d="M550.0,1810 L710.0,1810" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="562.0" y="1802" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein</text>
+<path d="M930.0,1810 L1000,1810 L1000,1710 L420,1710 L420,1750.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="1008" y="1770" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein · in Frage 8 bleiben</text>
+<path d="M550.0,2020 L710.0,2020" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="562.0" y="2012" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein</text>
+<path d="M930.0,2020 L1000,2020 L1000,1920 L420,1920 L420,1960.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="1008" y="1980" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein · in Frage 9 bleiben</text>
+<path d="M420,125.0 L420,160.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M550.0,220 L680.0,220" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="562.0" y="212" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein</text>
+<path d="M420,280.0 L420,330.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="428" y="296.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+<path d="M550.0,390 L680.0,390" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="562.0" y="382" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein</text>
+<path d="M420,450.0 L420,500.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="428" y="466.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+<path d="M580.0,545 L700.0,545" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)" stroke-dasharray="6 4"/>
+<path d="M420,590.0 L420,632.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,708.0 L420,752.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,828.0 L420,872.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,948.0 L420,992.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,1068.0 L420,1120.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M290.0,1170 L140,1170 L140,1272.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="278.0" y="1162" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="end" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">entlassen</text>
+<path d="M420,1220.0 L420,1272.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="428" y="1236.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">aktuell</text>
+<path d="M550.0,1170 L700,1170 L700,1272.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="562.0" y="1162" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">gemischt</text>
+<path d="M140,1328.0 L140,1365 L420,1365 L420,1392.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,1328.0 L420,1392.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M700,1328.0 L700,1365 L420,1365 L420,1392.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,1468.0 L420,1540.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,1660.0 L420,1750.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="428" y="1676.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+<path d="M820,1650.0 L820,1690 L420,1690 L420,1750.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="828" y="1666.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+<path d="M420,1870.0 L420,1960.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="428" y="1886.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+<path d="M820,1860.0 L820,1900 L420,1900 L420,1960.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="828" y="1876.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+<path d="M420,2080.0 L420,2170.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="428" y="2096.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+<path d="M820,2070.0 L820,2110 L420,2110 L420,2170.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="828" y="2086.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+<path d="M550.0,2230 L710.0,2230" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="562.0" y="2222" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein</text>
+<path d="M930.0,2230 L1000,2230 L1000,2140 L420,2140 L420,2170.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="1008" y="2190" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">zurück zu Frage 10</text>
+<path d="M420,2290.0 L420,2352.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="428" y="2306.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
+
+<text x="575" y="30.0" font-size="20" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Prozessdiagramm Dokucheckliste PDok · Stand v3 (Nutzer)</text>
+<rect x="270.0" y="75.0" width="300" height="50" rx="25.0" fill="#FFFFFF" stroke="#94BF05" stroke-width="4"/>
+<text x="420" y="100.0" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Anfrage zur Aushebung der PDok</text>
+<polygon points="420,160.0 550.0,220 420,280.0 290.0,220" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="212.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 1</text>
+<text x="420" y="227.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Anfrage berechtigt?</text>
+<rect x="680.0" y="185.0" width="280" height="70" rx="28" fill="#6E6F70" stroke="#6E6F70" stroke-width="2"/>
+<text x="820" y="205.0" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">ABBRUCH</text>
+<text x="820" y="220.0" font-size="12" font-weight="normal" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">Auf Antwort des Anfragegebers warten</text>
+<text x="820" y="235.0" font-size="12" font-weight="normal" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">bzw. Rücksprache mit DL/MM</text>
+<polygon points="420,330.0 550.0,390 420,450.0 290.0,390" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="367.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 2</text>
+<text x="420" y="382.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Betrifft die Anfrage ganz oder</text>
+<text x="420" y="397.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">teilweise UKS Campus LKH</text>
+<text x="420" y="412.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">und/oder Campus CDK?</text>
+<rect x="680.0" y="360.0" width="280" height="60" rx="28" fill="#6E6F70" stroke="#6E6F70" stroke-width="2"/>
+<text x="820" y="375.0" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">ABBRUCH</text>
+<text x="820" y="390.0" font-size="12" font-weight="normal" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">Stabstelle Pflegeinformatik</text>
+<text x="820" y="405.0" font-size="12" font-weight="normal" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">des UKS ist nicht zuständig</text>
+<rect x="260.0" y="500.0" width="320" height="90" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="522.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 3 · Ordner anlegen unter</text>
+<text x="420" y="537.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">G:\…\Beschwerden_Schadensfälle\test cp</text>
+<text x="420" y="552.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Ordnername eingeben (Pflicht)</text>
+<text x="420" y="567.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">→ „Erledigt“</text>
+<path d="M700.0,513.0 H940.0 V569.0 Q880.0,555.0 820.0,569.0 T700.0,569.0 Z" fill="#FFFFFF" stroke="#94BF05" stroke-width="2"/>
+<text x="820" y="537.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Abschlussbericht.txt</text>
+<text x="820" y="552.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">wird im Ordner angelegt</text>
+<rect x="260.0" y="632.0" width="320" height="76" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="655.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Ticket als Störung anlegen und</text>
+<text x="420" y="670.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">sich selbst zuweisen</text>
+<text x="420" y="685.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Ticketnummer eingeben (Pflicht) → „Erledigt“</text>
+<rect x="260.0" y="752.0" width="320" height="76" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="775.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 4 · Teilschritt 1</text>
+<text x="420" y="790.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Anzahl Fälle (0–5) und Zeiträume (0–5)</text>
+<text x="420" y="805.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">→ „Weiter“ (gesperrt, wenn beide 0)</text>
+<rect x="260.0" y="872.0" width="320" height="76" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="895.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Teilschritt 2 · je Fall: Fallnummer</text>
+<text x="420" y="910.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">je Zeitraum: TT.MM.JJJJ – TT.MM.JJJJ</text>
+<text x="420" y="925.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">→ „Fertig und weiter“</text>
+<rect x="260.0" y="992.0" width="320" height="76" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="1015.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Teilschritt 3 · Was darf ausgehoben werden?</text>
+<text x="420" y="1030.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">○ Komplette PDok des Umfangs</text>
+<text x="420" y="1045.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">○ Teile des Umfangs (+ Freitext)</text>
+<polygon points="420,1120.0 550.0,1170 420,1220.0 290.0,1170" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="1162.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 5</text>
+<text x="420" y="1177.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Welcher Fallstatus?</text>
+<rect x="30.0" y="1272.0" width="220" height="56" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="140" y="1292.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">tree_1</text>
+<text x="140" y="1307.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Spalte „entlassen“</text>
+<rect x="310.0" y="1272.0" width="220" height="56" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="1292.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">tree_2</text>
+<text x="420" y="1307.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Spalte „aktuell“</text>
+<rect x="580.0" y="1272.0" width="240" height="56" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="700" y="1292.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">tree_3 (tree_1 + tree_2)</text>
+<text x="700" y="1307.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">„entlassen“ + „aktuell“</text>
+<rect x="250.0" y="1392.0" width="340" height="76" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="1415.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 6 · Dokumentationssysteme wählen</text>
+<text x="420" y="1430.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">MV5 · MV6 · NICE · U · Papier (Mehrfachwahl)</text>
+<text x="420" y="1445.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">mind. 1 Haken → „Weiter“</text>
+<polygon points="420,1540.0 550.0,1600 420,1660.0 290.0,1600" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="1577.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 7</text>
+<text x="420" y="1592.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Alle relevanten Dokumente</text>
+<text x="420" y="1607.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">identifiziert (inkl.</text>
+<text x="420" y="1622.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Handsuche Hydmedia)?</text>
+<polygon points="820,1550.0 930.0,1600 820,1650.0 710.0,1600" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="820" y="1592.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Trotzdem</text>
+<text x="820" y="1607.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">fortfahren?</text>
+<polygon points="420,1750.0 550.0,1810 420,1870.0 290.0,1810" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="1795.0" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 8</text>
+<text x="420" y="1810.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Alle Dokumente einer</text>
+<text x="420" y="1825.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Kategorie zugeordnet?</text>
+<polygon points="820,1760.0 930.0,1810 820,1860.0 710.0,1810" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="820" y="1802.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Trotzdem</text>
+<text x="820" y="1817.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">fortfahren?</text>
+<rect x="30.0" y="1775.0" width="200" height="70" rx="6" fill="#F6F4EA" stroke="#B0B2B4" stroke-width="2" stroke-dasharray="5 3"/>
+<text x="130" y="1795.0" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Kategorien:</text>
+<text x="130" y="1810.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Pflegeanamnese</text>
+<text x="130" y="1825.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">… (weitere tba)</text>
+<polygon points="420,1960.0 550.0,2020 420,2080.0 290.0,2020" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="1997.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 9</text>
+<text x="420" y="2012.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Export über Livelink</text>
+<text x="420" y="2027.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">opentext an Anfragegeber</text>
+<text x="420" y="2042.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">ausgeführt?</text>
+<polygon points="820,1970.0 930.0,2020 820,2070.0 710.0,2020" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="820" y="2012.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Trotzdem</text>
+<text x="820" y="2027.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">fortfahren?</text>
+<polygon points="420,2170.0 550.0,2230 420,2290.0 290.0,2230" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="2215.0" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 10</text>
+<text x="420" y="2230.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Wurde das Ticket</text>
+<text x="420" y="2245.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">geschlossen?</text>
+<rect x="710.0" y="2205.0" width="220" height="50" rx="6" fill="#F6F4EA" stroke="#B0B2B4" stroke-width="2" stroke-dasharray="5 3"/>
+<text x="820" y="2230.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Hinweis: „Ticket schliessen!“</text>
+<rect x="260.0" y="2352.0" width="320" height="56" rx="28.0" fill="#FFFFFF" stroke="#94BF05" stroke-width="4"/>
+<text x="420" y="2372.5" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">ENDE · Abschlussbericht.txt</text>
+<text x="420" y="2387.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">anzeigen und speichern</text>
+
+<text x="135" y="1990.0" font-size="14" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Legende</text>
+<rect x="35.0" y="2015.0" width="200" height="30" rx="15.0" fill="#FFFFFF" stroke="#94BF05" stroke-width="4"/>
+<text x="135" y="2030.0" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Start / Ende</text>
+<rect x="35.0" y="2055.0" width="200" height="30" rx="15.0" fill="#6E6F70" stroke="#6E6F70" stroke-width="2"/>
+<text x="135" y="2070.0" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">Abbruch</text>
+<rect x="35.0" y="2095.0" width="200" height="30" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="135" y="2110.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Arbeitsschritt / Eingabe</text>
+<polygon points="135,2135.0 235.0,2165 135,2195.0 35.0,2165" fill="#F6F4EA" stroke="#6E6F70" stroke-width="2"/>
+<text x="135" y="2165.0" font-size="12" font-weight="bold" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Entscheidung (Ja/Nein)</text>
+<rect x="35.0" y="2210.0" width="200" height="30" rx="6" fill="#F6F4EA" stroke="#B0B2B4" stroke-width="2" stroke-dasharray="5 3"/>
+<text x="135" y="2225.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Hinweis</text>
+<path d="M35.0,2252.0 H235.0 V2280.0 Q185.0,2266.0 135.0,2280.0 T35.0,2280.0 Z" fill="#FFFFFF" stroke="#94BF05" stroke-width="2"/>
+<text x="135" y="2270.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Datei</text>
+</svg>

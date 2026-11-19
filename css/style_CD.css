@@ -1,0 +1,20 @@
+:root {
+  --salk-gruen: #94BF05;
+  --uk-blau: #00509E;
+  --textgrau: #6E6F70;
+  --hellgrau: #B0B2B4;
+  --hintergrund-beige: #F6F4EA;
+  --pmu-blau: #262E61;
+}
+
+body { font-family: Arial, sans-serif; color: var(--textgrau); }
+.headline { font-weight: 400; }
+.fliesstext { font-weight: 400; font-style: normal; }
+.texthervorhebung { font-style: italic; }
+.zwischenheadline { font-weight: 700; }
+
+.salk-hauptfarbe { color: var(--salk-gruen); }
+.uk-logo-farbe { color: var(--uk-blau); }
+.pmu-farbe { color: var(--pmu-blau); }
+.hintergrund-beige { background-color: var(--hintergrund-beige); }
+.hintergrund-hellgrau { background-color: var(--hellgrau); }
