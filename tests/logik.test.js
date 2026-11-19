@@ -205,3 +205,9 @@ test('Bericht: Ticket-Link wird übernommen', () => {
   const z = bis(3); Object.assign(z.que_3, { linkDokumentieren: 'y', ticketLink: ' https://t/42 ', linkGespeichert: true });
   assert.match(L.berichtText(z), /Ticket-Link: https:\/\/t\/42\r\n/);
 });
+
+test('Kategorien que_8: Pflegeprozess + "Sonstige", keine Platzhalter', () => {
+  assert.ok(L.KONFIG.kategorien.includes('Pflegeanamnese'));
+  assert.equal(L.KONFIG.kategorien.at(-1), 'Sonstige');
+  assert.ok(!L.KONFIG.kategorien.some((k) => k.includes('tba')));
+});

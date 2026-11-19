@@ -20,7 +20,17 @@
     dateiname: 'Abschlussbericht.txt',
     maxZeilen: 5,
     systeme: ['MV5', 'MV6', 'NICE', 'U', 'Papier'],
-    kategorien: ['Pflegeanamnese', '… tba', '… tba', '… tba', '… tba', '… tba', '… tba'],
+    // Generische Kategorien entlang des Pflegeprozesses (Anamnese → Diagnose → Planung → Durchführung → Evaluation)
+    kategorien: [
+      'Pflegeanamnese',
+      'Pflegeassessments / Risikoeinschätzungen',
+      'Pflegediagnosen / Pflegeprobleme und Ressourcen',
+      'Pflegeplanung (Ziele und Maßnahmen)',
+      'Durchführungsnachweis (Pflegeinterventionen)',
+      'Pflegebericht',
+      'Pflegeevaluation',
+      'Sonstige',
+    ],
   };
 
   /* ---------- Texte (wörtlich aus der Vorlage) ---------- */

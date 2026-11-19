@@ -30,12 +30,12 @@ docs/ANALYSE.md        Gefundene Lücken/Widersprüche + Empfehlungen
 2. `style_CD.css` muss **vor** `checkliste.css` eingebunden sein.
 3. Im Zielseiten-HTML ein `<div id="app"></div>` anlegen und die Skripte in dieser Reihenfolge einbinden:
    `logik.js`, `bericht-speicher.js`, `ui-bausteine.js`, `wizard.js`/`formular.js`.
-4. Platzhalter in `js/logik.js` → `KONFIG` ersetzen (Explorer-Link, Ticket-System, Kategorien).
+4. Platzhalter in `js/logik.js` → `KONFIG` ersetzen (Explorer-Link, Ticket-System).
 
 Alle CSS-Klassen beginnen mit `dc-` → keine Kollision mit bestehendem CSS.
 
 ## Tests
 ```
-npm test                    # Logik (36 Tests)
+npm test                    # Logik (37 Tests)
 npm run test:e2e            # Browser, benötigt Playwright
 ```
