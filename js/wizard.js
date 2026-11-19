@@ -15,7 +15,7 @@
     const fortschritt = h('ol', { class: 'dc-fortschritt', 'aria-hidden': 'true' },
       window.DokuLogik.SCHRITTE.map((s, i) => h('li', { class: i < fertig ? 'erledigt' : i === fertig && !e.ende ? 'aktiv' : '' })));
     const text = h('p', { class: 'dc-fortschritt-text' },
-      e.ende ? 'Alle 10 Schritte erledigt' : `Schritt ${fertig + 1} von 10 · ${aktuell.titel}`);
+      e.ende ? 'Alle 10 Fragen erledigt' : `Frage ${fertig + 1} von 10 · ${aktuell.titel}`);
 
     let inhalt;
     if (e.abbruch) {

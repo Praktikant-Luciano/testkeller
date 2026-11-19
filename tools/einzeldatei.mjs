@@ -12,6 +12,7 @@ fs.mkdirSync(ziel, { recursive: true });
 const varianten = [
   ['variante-a-wizard', 'Dokucheckliste_Variante_A.html'],
   ['variante-b-formular', 'Dokucheckliste_Variante_B.html'],
+  ['variante-ohne-blau', 'Dokucheckliste_PDok.html'],
 ];
 for (const [ordner, datei] of varianten) {
   let html = fs.readFileSync(path.join(wurzel, ordner, 'index.html'), 'utf8');

@@ -1,4 +1,27 @@
-# Logik-Analyse Dokucheckliste PDok (Vorlage v2 → v2_neu)
+# Logik-Analyse Dokucheckliste PDok
+
+## 0. Prüfung Vorlage v3_nutzer (19.11.2026) – aktueller Stand
+Legende: 🔴 Lücke mit Risiko · 🟡 Unklarheit · ✅ so umgesetzt
+
+| # | Stelle | Befund | Umsetzung |
+|---|--------|--------|-----------|
+| N1 🟡 | Kopf | „alle sub_que_x zu F“ – Satz bricht ab. Es gibt aktuell keine sub_que mehr. | Ohne Wirkung. Bitte ergänzen, falls künftig Unterfragen kommen. |
+| N2 🔴 | Frage 3 | Ordnername wird nicht mehr abgefragt. Der Bericht kennt den Ordner nur, wenn er im Dialog gewählt wurde (Chrome/Edge). | ✅ Bericht: Ablage = Zielpfad + gewählter Ordner, sonst „&lt;Ordnername nicht erfasst&gt;“. Empfehlung: Feld „Ordnername“. |
+| N3 🔴 | Frage 3 | Ticket-Link/-Nummer wird nicht mehr dokumentiert → Bericht und Ticket sind nicht verknüpft. | Empfehlung: Pflichtfeld „Ticketnummer“. |
+| N4 🟡 | Frage 3 | Pfad G:\… kann ein Browser weder öffnen noch anlegen. | ✅ Pfad wird angezeigt + Button „Pfad kopieren“ (für den Explorer). |
+| N5 🟡 | Frage 3 | Serviceware-Link ist nur im Kliniknetz erreichbar. | ✅ Eingebaut, ⚠ nicht getestet (kein Zugriff). |
+| N6 🔴 | Frage 4 TS 2 | Vorlage nennt noch „+“-Button und „5 Zeilen max.“ – widerspricht der festen Anzahl aus Teilschritt 1. | ✅ Annahme: genau so viele Zeilen wie in TS 1 angegeben, kein „+“. |
+| N7 🟡 | Frage 4 TS 2 | „ausgegraut, bis eine der beiden Informationen vorhanden ist“ – bei fester Anzahl unklar. | ✅ Annahme: **alle** angekündigten Zeilen müssen gültig sein. |
+| N8 🟡 | Frage 4 TS 1 | Ungültige Eingaben (z. B. 7, Buchstaben) nicht geregelt. | ✅ Nur 0–5, sonst Hinweis und Button gesperrt. |
+| N9 🟡 | Frage 5/6 | Text: „gemischt → tree_1 und tree_2“, Tabelle: tree_3. | ✅ Gleiche Wirkung (beide Spalten). |
+| N10 🟡 | Frage 6 | Bei „gemischt“ reicht 1 Haken (z. B. nur „entlassen“). | ✅ Laut Vorlage umgesetzt. Strenge Regel per Option abrufbar. |
+| N11 🟡 | Frage 8 | Kategorien wieder „… tba“. | ✅ So angezeigt. Liste wird nachgereicht. |
+| N12 🟡 | Frage 9 | „Trotzdem fortfahren“ erlaubt Ticketschluss ohne Export. | ✅ Laut Vorlage umgesetzt. Bericht markiert „TROTZDEM FORTGEFAHREN“. |
+| N13 ✅ | Anzeige | que_x → „Frage x“, (y/n) → (Ja/Nein). | Umgesetzt (Oberfläche + Bericht). |
+
+---
+
+## Archiv: Prüfung Vorlage v2 → v3
 
 Legende: 🔴 Widerspruch/Lücke mit Risiko · 🟡 Unklarheit · 🟢 Verbesserung
 „Umgesetzt“ = im Code gelöst · „Annahme“ = meine Auslegung, bitte bestätigen · „Offen“ = Entscheidung nötig

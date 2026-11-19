@@ -31,7 +31,7 @@
         h('h2', null, 'Vorschau ' + L.KONFIG.dateiname),
         L.berichtAngelegt(ctx.z)
           ? h('pre', { class: 'dc-bericht' }, L.berichtText(ctx.z, new Date(), ctx.optionen))
-          : h('p', null, 'Wird in Schritt 3 angelegt.')));
+          : h('p', null, 'Wird in Frage 3 angelegt.')));
 
     return h('div', { class: 'dc-raster' },
       h('nav', { class: 'dc-seite' }, nav),

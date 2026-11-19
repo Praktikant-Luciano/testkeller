@@ -30,47 +30,47 @@ async function nein(page, gruppe) { await page.locator(`[data-key="${gruppe}_n"]
 async function durchlauf(page, { mitTrotzdem = false } = {}) {
   await ja(page, 'que_1');
   await ja(page, 'que_2');
-  const erledigt = page.locator('[data-key="ordner_erledigt"]');
-  assert.equal(await erledigt.isDisabled(), true, 'Erledigt muss ohne Pfad gesperrt sein');
-  await page.fill('[data-key="pfad"]', 'X:\\PDok\\2026-001');
-  await erledigt.click();
+  assert.equal(await page.locator('[data-key="zielpfad"]').innerText(), 'G:\\Pflege Direktion\\gemeinsame Daten\\IT Koordination Pflege\\7_Auswertungen ePDOK\\Beschwerden_Schadensfälle\\test cp');
+  await page.locator('[data-key="ordner_erledigt"]').click();
   await page.locator('[data-key="ticket_erledigt"]').click();
-  await page.locator('[data-key="sq3_y"]').click();
-  assert.equal(await page.locator('[data-key="link_speichern"]').isDisabled(), true);
-  await page.fill('[data-key="ticketlink"]', 'https://ticket/4711');
-  await page.locator('[data-key="link_speichern"]').click();
-  await page.locator('[data-key="q3_weiter"]').click();
-  // que_4
+  // Frage 4 – Teilschritt 1
+  const weiter1 = page.locator('[data-key="q4_anzahl_weiter"]');
+  assert.equal(await weiter1.isDisabled(), true, 'beide leer => gesperrt');
+  await page.fill('[data-key="anz_f"]', '0');
+  assert.equal(await weiter1.isDisabled(), true, 'nur 0 => gesperrt');
+  await page.fill('[data-key="anz_f"]', '1');
+  await page.fill('[data-key="anz_z"]', '1');
+  await weiter1.click();
+  // Teilschritt 2
+  assert.equal(await page.locator('[data-key="f1"]').count(), 0, 'genau 1 Fallzeile');
   await page.fill('[data-key="zv0"]', '01.01.2026');
-  await page.fill('[data-key="zb0"]', '31.12.2025'); // falsch herum
+  await page.fill('[data-key="zb0"]', '31.12.2025');
   assert.equal(await page.locator('[data-key="q4_fertig"]').isDisabled(), true, 'Von>Bis muss sperren');
   await page.fill('[data-key="zb0"]', '31.01.2026');
-  await page.locator('[data-key="plus_Fall"]').click();
+  assert.equal(await page.locator('[data-key="q4_fertig"]').isDisabled(), true, 'Fallzeile leer muss sperren');
   await page.fill('[data-key="f0"]', '4711');
   await page.locator('[data-key="q4_fertig"]').click();
+  // Teilschritt 3
   await page.locator('[data-key="q4art_teile"]').check();
   assert.equal(await page.locator('[data-key="q4_weiter"]').isDisabled(), true);
   await page.fill('[data-key="q4teile"]', 'nur Pflegeanamnese');
   await page.locator('[data-key="q4_weiter"]').click();
-  // que_5/6
+  // Frage 5/6
   await page.locator('[data-key="q5_gemischt"]').check();
   await page.locator('[data-key="q5_weiter"]').click();
   assert.equal(await page.locator('[data-key="q6_weiter"]').isDisabled(), true);
   await page.locator('[data-key="q6_entlassen_MV5"]').check();
-  assert.equal(await page.locator('[data-key="q6_weiter"]').isDisabled(), true, 'gemischt braucht beide Spalten');
+  assert.equal(await page.locator('[data-key="q6_weiter"]').isDisabled(), false, 'laut Vorlage reicht 1 Haken');
   await page.locator('[data-key="q6_aktuell_NICE"]').check();
   await page.locator('[data-key="q6_weiter"]').click();
-  // que_7..9
+  // Frage 7–9
   if (mitTrotzdem) {
     await nein(page, 'que_7'); await nein(page, 'que_7_trotzdem');
-    assert.equal(await page.locator('[data-key="que_7_y"]').getAttribute('aria-pressed'), 'false', 'n/n muss in que_7 bleiben');
+    assert.equal(await page.locator('[data-key="que_7_y"]').getAttribute('aria-pressed'), 'false', 'Nein/Nein muss in Frage 7 bleiben');
     await nein(page, 'que_7'); await ja(page, 'que_7_trotzdem');
   } else await ja(page, 'que_7');
   await ja(page, 'que_8');
-  await nein(page, 'que_9');
-  assert.ok(await page.getByText(/Export zuerst ausführen/).isVisible(), 'que_9 n muss blockieren');
-  assert.equal(await page.locator('[data-key="que_10_y"]').count(), 0, 'que_10 darf nach que_9 n nicht erscheinen');
-  await ja(page, 'que_9');
+  if (mitTrotzdem) { await nein(page, 'que_9'); await ja(page, 'que_9_trotzdem'); } else await ja(page, 'que_9');
   await nein(page, 'que_10');
   assert.ok(await page.getByText('Ticket schliessen!').isVisible());
   await ja(page, 'que_10');
@@ -79,7 +79,7 @@ async function durchlauf(page, { mitTrotzdem = false } = {}) {
 
 const browser = await chromium.launch();
 let fehler = 0;
-for (const variante of ['variante-a-wizard', 'variante-b-formular', 'einzeldatei/Dokucheckliste_Variante_A.html', 'einzeldatei/Dokucheckliste_Variante_B.html']) {
+for (const variante of ['variante-a-wizard', 'variante-b-formular', 'variante-ohne-blau', 'einzeldatei/Dokucheckliste_PDok.html', 'einzeldatei/Dokucheckliste_Variante_A.html', 'einzeldatei/Dokucheckliste_Variante_B.html']) {
   for (const modus of ['fs', 'download']) {
     const name = `${variante} / ${modus}`;
     const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 } });
@@ -91,7 +91,8 @@ for (const variante of ['variante-a-wizard', 'variante-b-formular', 'einzeldatei
     try {
       const bericht = await durchlauf(page, { mitTrotzdem: modus === 'download' });
       assert.match(bericht, /Status: +ABGESCHLOSSEN/);
-      assert.match(bericht, /Ticket-Link: https:\/\/ticket\/4711/);
+      assert.match(bericht, /Fall #1: 4711/);
+      assert.match(bericht, /\[Frage 10\] Ticket geschlossen: Ja/);
       assert.match(bericht, /Teile des Umfangs – nur Pflegeanamnese/);
       assert.match(bericht, /entlassen: MV5/);
       assert.match(bericht, /aktuell: NICE/);
@@ -99,8 +100,10 @@ for (const variante of ['variante-a-wizard', 'variante-b-formular', 'einzeldatei
         await page.waitForTimeout(600);
         const datei = await page.evaluate(() => window.__dateien['Abschlussbericht.txt']);
         assert.ok(datei && datei.includes('ABGESCHLOSSEN'), 'Datei im Ordner muss Endstand haben');
+        assert.ok(datei.includes('test cp\\PDok-Testordner'), 'gewählter Ordnername im Bericht');
       } else {
-        assert.match(bericht, /\[7\] .*TROTZDEM FORTGEFAHREN/);
+        assert.match(bericht, /\[Frage 7\] .*TROTZDEM FORTGEFAHREN/);
+        assert.match(bericht, /\[Frage 9\] .*TROTZDEM FORTGEFAHREN/);
         const [dl] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'Bericht herunterladen' }).last().click()]);
         assert.equal(dl.suggestedFilename(), 'Abschlussbericht.txt');
         const inhalt = fs.readFileSync(await dl.path(), 'utf8');
@@ -146,11 +149,16 @@ for (const variante of ['variante-a-wizard', 'variante-b-formular', 'einzeldatei
   if (!ok) fehler++;
   // Fokus bleibt beim Tippen erhalten
   await ja(page, 'que_1');
-  await page.locator('[data-key="pfad"]').click();
-  await page.keyboard.type('X:\\abc');
-  const wert = await page.inputValue('[data-key="pfad"]');
-  console.log(wert === 'X:\\abc' ? 'ok  ' : 'FAIL', 'Tippen ohne Fokusverlust');
-  if (wert !== 'X:\\abc') fehler++;
+  await page.locator('[data-key="ordner_erledigt"]').click();
+  await page.locator('[data-key="ticket_erledigt"]').click();
+  await page.locator('[data-key="anz_f"]').click();
+  await page.keyboard.type('1');
+  await page.locator('[data-key="q4_anzahl_weiter"]').click();
+  await page.locator('[data-key="f0"]').click();
+  await page.keyboard.type('AB-4711');
+  const wert = await page.inputValue('[data-key="f0"]');
+  console.log(wert === 'AB-4711' ? 'ok  ' : 'FAIL', 'Tippen ohne Fokusverlust');
+  if (wert !== 'AB-4711') fehler++;
 }
 
 await browser.close();

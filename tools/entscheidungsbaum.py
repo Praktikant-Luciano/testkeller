@@ -1,4 +1,4 @@
-"""Erzeugt den Entscheidungsbaum der Dokucheckliste PDok (Stand v3) als
+"""Erzeugt das Prozessdiagramm der Dokucheckliste PDok (Stand v3_nutzer, ohne CD-Blau) als
 SVG (Ansicht/Druck) und .drawio (bearbeitbar in draw.io; Export nach Visio .vsdx dort möglich).
 Eine Quelle (Knoten + Kanten mit festen Koordinaten) -> beide Formate sind identisch.
 Ausführen: python3 tools/entscheidungsbaum.py
@@ -6,21 +6,24 @@ Ausführen: python3 tools/entscheidungsbaum.py
 from html import escape
 from pathlib import Path
 
-CI = dict(gruen='#94BF05', blau='#00509E', grau='#6E6F70', hellgrau='#B0B2B4', beige='#F6F4EA', pmu='#262E61', weiss='#FFFFFF')
+CI = dict(gruen='#94BF05', grau='#6E6F70', hellgrau='#B0B2B4', beige='#F6F4EA', weiss='#FFFFFF')
 FONT = 'Arial'
 OUT = Path(__file__).resolve().parent.parent / 'docs' / 'entscheidungsbaum'
 
 # Stil je Knotentyp: (Füllung, Rahmen, Textfarbe, fett)
+# Ohne CD-Blau (Vorgabe Nutzer): nur SALK-Grün, Textgrau, Hellgrau, Beige.
+# Grün nur als Fläche/Rahmen (als Text auf Weiß zu kontrastarm).
 STIL = {
-    'start':    (CI['gruen'], CI['pmu'],  CI['pmu'],   True),
-    'ende':     (CI['gruen'], CI['pmu'],  CI['pmu'],   True),
-    'abbruch':  (CI['pmu'],   CI['pmu'],  CI['weiss'], True),
-    'schritt':  (CI['weiss'], CI['blau'], CI['pmu'],   False),
-    'frage':    (CI['beige'], CI['pmu'],  CI['pmu'],   True),
-    'hinweis':  (CI['beige'], CI['grau'], CI['pmu'],   False),
-    'dokument': (CI['weiss'], CI['gruen'], CI['pmu'],  False),
-    'titel':    ('none',      'none',     CI['pmu'],   False),
+    'start':    (CI['weiss'], CI['gruen'], CI['grau'],  True),
+    'ende':     (CI['weiss'], CI['gruen'], CI['grau'],  True),
+    'abbruch':  (CI['grau'],  CI['grau'],  CI['weiss'], True),
+    'schritt':  (CI['weiss'], CI['grau'],  CI['grau'],  False),
+    'frage':    (CI['beige'], CI['grau'],  CI['grau'],  True),
+    'hinweis':  (CI['beige'], CI['hellgrau'], CI['grau'], False),
+    'dokument': (CI['weiss'], CI['gruen'], CI['grau'],  False),
+    'titel':    ('none',      'none',      CI['grau'],  False),
 }
+RAHMEN = {'start': 4, 'ende': 4}
 
 N = {}   # id -> dict
 E = []   # Kanten
@@ -37,62 +40,49 @@ def kante(a, pa, b, pb, punkte=(), label=None, gestrichelt=False, label_xy=None)
 
 # ---------------- Layout ----------------
 M, R, L, RR = 420, 820, 140, 1000   # Spalten: Mitte, rechts, links, Rücklauf
-PW, PH, DW, DH = 300, 64, 260, 120
+PW, PH, DW, DH = 320, 64, 260, 120
 
-knoten('titel', 'titel', 575, 30, 900, 40, 'Entscheidungsbaum Dokucheckliste PDok · Stand v3 (19.11.2026)')
+knoten('titel', 'titel', 575, 30, 900, 40, 'Prozessdiagramm Dokucheckliste PDok · Stand v3 (Nutzer)')
 knoten('start', 'start', M, 100, 300, 50, 'Anfrage zur Aushebung der PDok')
-y = 220
-knoten('q1', 'frage', M, y, DW, DH, 'que_1\nAnfrage legitim?')
-knoten('a1', 'abbruch', R, y, 280, 70, 'ABBRUCH\nAuf Antwort des Anfragegebers warten\nbzw. Rücksprache mit DL/MM')
-y = 390
-knoten('q2', 'frage', M, y, DW, DH, 'que_2\nBetrifft die Anfrage ganz oder\nteilweise UKS Campus LKH\nund/oder Campus CDK?')
-knoten('a2', 'abbruch', R, y, 280, 60, 'ABBRUCH\nStabstelle Pflegeinformatik\ndes UKS ist nicht zuständig')
-y = 540
-knoten('p3a', 'schritt', M, y, PW, 76, 'que_3 · Ordner anlegen (Explorer-Link)\nund eindeutig benennen\nPfad eingeben → „Erledigt“')
-knoten('doc', 'dokument', R, y, 240, 64, 'Abschlussbericht.txt\nwird angelegt')
-y = 650
-knoten('p3b', 'schritt', M, y, PW, PH, 'Ticket anlegen und zuweisen\n(Ticket-System) → „Erledigt“')
-y = 780
-knoten('d3', 'frage', M, y, DW, 110, 'sub_que_3\nLink zum Ticket\ndokumentieren?')
-knoten('p3c', 'schritt', R, y, 260, PH, 'Ticket-Link eingeben →\n„Speichern in Abschlussbericht.txt“')
-y = 930
-knoten('p4a', 'schritt', M, y, PW, 76, 'que_4 · Wie ausheben?\nZeitraum #1–5 (TT.MM.JJJJ)\nund/oder Fall #1–5 → „Fertig und weiter“')
-y = 1050
-knoten('p4b', 'schritt', M, y, PW, 76, 'Was darf ausgehoben werden?\n○ Komplette PDok des Umfangs\n○ Teile des Umfangs (+ Freitext)')
-y = 1190
-knoten('d5', 'frage', M, y, DW, 100, 'que_5\nWelcher Fallstatus?')
-y = 1320
+knoten('q1', 'frage', M, 220, DW, DH, 'Frage 1\nAnfrage berechtigt?')
+knoten('a1', 'abbruch', R, 220, 280, 70, 'ABBRUCH\nAuf Antwort des Anfragegebers warten\nbzw. Rücksprache mit DL/MM')
+knoten('q2', 'frage', M, 390, DW, DH, 'Frage 2\nBetrifft die Anfrage ganz oder\nteilweise UKS Campus LKH\nund/oder Campus CDK?')
+knoten('a2', 'abbruch', R, 390, 280, 60, 'ABBRUCH\nStabstelle Pflegeinformatik\ndes UKS ist nicht zuständig')
+knoten('p3a', 'schritt', M, 545, PW, 90, 'Frage 3 · Ordner eindeutig benennen\nund anlegen unter\nG:\\…\\Beschwerden_Schadensfälle\\test cp\n→ „Erledigt“')
+knoten('doc', 'dokument', R, 545, 240, 64, 'Abschlussbericht.txt\nwird im Ordner angelegt')
+knoten('p3b', 'schritt', M, 670, PW, 64, 'Ticket als Störung anlegen und\nsich selbst zuweisen → „Erledigt“')
+knoten('p4a', 'schritt', M, 790, PW, 76, 'Frage 4 · Teilschritt 1\nAnzahl Fälle (0–5) und Zeiträume (0–5)\n→ „Weiter“ (gesperrt, wenn beide 0)')
+knoten('p4b', 'schritt', M, 910, PW, 76, 'Teilschritt 2 · je Fall: Fallnummer\nje Zeitraum: TT.MM.JJJJ – TT.MM.JJJJ\n→ „Fertig und weiter“')
+knoten('p4c', 'schritt', M, 1030, PW, 76, 'Teilschritt 3 · Was darf ausgehoben werden?\n○ Komplette PDok des Umfangs\n○ Teile des Umfangs (+ Freitext)')
+knoten('d5', 'frage', M, 1170, DW, 100, 'Frage 5\nWelcher Fallstatus?')
+y = 1300
 knoten('t1', 'schritt', L, y, 220, 56, 'tree_1\nSpalte „entlassen“')
 knoten('t2', 'schritt', M, y, 220, 56, 'tree_2\nSpalte „aktuell“')
-knoten('t3', 'schritt', 700, y, 240, 56, 'tree_3\nSpalten „entlassen“ + „aktuell“')
-y = 1450
-knoten('p6', 'schritt', M, y, 340, 76, 'que_6 · Dokumentationssysteme wählen\nMV5 · MV6 · NICE · U · Papier (Mehrfachwahl)\ntree_3: mind. 1 System je Spalte')
+knoten('t3', 'schritt', 700, y, 240, 56, 'tree_3 (tree_1 + tree_2)\n„entlassen“ + „aktuell“')
+knoten('p6', 'schritt', M, 1430, 340, 76, 'Frage 6 · Dokumentationssysteme wählen\nMV5 · MV6 · NICE · U · Papier (Mehrfachwahl)\nmind. 1 Haken → „Weiter“')
 
 def trotzdem_block(nr, cy, text, rueck_y):
     knoten(f'q{nr}', 'frage', M, cy, DW, DH, text)
     knoten(f't{nr}', 'frage', R, cy, 220, 100, 'Trotzdem\nfortfahren?')
     kante(f'q{nr}', 'r', f't{nr}', 'l', label='Nein')
-    kante(f't{nr}', 'r', f'q{nr}', 'o', [(RR, cy), (RR, rueck_y), (M, rueck_y)], label=f'Nein · in que_{nr} bleiben', label_xy=(RR + 8, cy - 40))
+    kante(f't{nr}', 'r', f'q{nr}', 'o', [(RR, cy), (RR, rueck_y), (M, rueck_y)], label=f'Nein · in Frage {nr} bleiben', label_xy=(RR + 8, cy - 40))
 
-trotzdem_block(7, 1620, 'que_7\nAlle relevanten Dokumente\nidentifiziert?', 1520)
-trotzdem_block(8, 1830, 'que_8\nAlle Dokumente einer\nKategorie zugeordnet?', 1730)
-knoten('kat', 'hinweis', L - 10, 1830, 200, 150, 'Kategorien:\nPflegeanamnese\nPflegeassessments\nPflegediagnosen\nPflegeplanung\nDurchführungsnachweis\nPflegebericht · Pflegeevaluation\nSonstige')
-y = 2040
-knoten('q9', 'frage', M, y, DW, DH, 'que_9\nExport über Livelink\nopentext an Anfragegeber\nausgeführt?')
-knoten('h9', 'hinweis', R, y, 240, 64, 'Hinweis: Export zuerst\nausführen (kein „Trotzdem“)')
-y = 2240
-knoten('q10', 'frage', M, y, DW, DH, 'que_10\nWurde das Ticket\ngeschlossen?')
-knoten('h10', 'hinweis', R, y, 220, 50, 'Hinweis: „Ticket schliessen!“')
-knoten('ende', 'ende', M, 2390, 320, 56, 'ENDE · Abschlussbericht.txt\nanzeigen und speichern')
+trotzdem_block(7, 1600, 'Frage 7\nAlle relevanten Dokumente\nidentifiziert (inkl.\nHandsuche Hydmedia)?', 1500)
+trotzdem_block(8, 1810, 'Frage 8\nAlle Dokumente einer\nKategorie zugeordnet?', 1710)
+knoten('kat', 'hinweis', L - 10, 1810, 200, 70, 'Kategorien:\nPflegeanamnese\n… (weitere tba)')
+trotzdem_block(9, 2020, 'Frage 9\nExport über Livelink\nopentext an Anfragegeber\nausgeführt?', 1920)
+knoten('q10', 'frage', M, 2230, DW, DH, 'Frage 10\nWurde das Ticket\ngeschlossen?')
+knoten('h10', 'hinweis', R, 2230, 220, 50, 'Hinweis: „Ticket schliessen!“')
+knoten('ende', 'ende', M, 2380, 320, 56, 'ENDE · Abschlussbericht.txt\nanzeigen und speichern')
 
 # Legende
-lx, ly = 30, 2010
+lx, ly = 30, 1990
 knoten('leg', 'titel', lx + 105, ly, 210, 24, 'Legende')
 knoten('lg1', 'start', lx + 105, ly + 40, 200, 30, 'Start / Ende')
 knoten('lg2', 'abbruch', lx + 105, ly + 80, 200, 30, 'Abbruch')
 knoten('lg3', 'schritt', lx + 105, ly + 120, 200, 30, 'Arbeitsschritt / Eingabe')
 knoten('lg4', 'frage', lx + 105, ly + 175, 200, 60, 'Entscheidung (Ja/Nein)')
-knoten('lg5', 'hinweis', lx + 105, ly + 235, 200, 30, 'Hinweis / Kategorien')
+knoten('lg5', 'hinweis', lx + 105, ly + 235, 200, 30, 'Hinweis')
 knoten('lg6', 'dokument', lx + 105, ly + 280, 200, 36, 'Datei')
 
 # ---------------- Kanten ----------------
@@ -103,28 +93,25 @@ kante('q2', 'r', 'a2', 'l', label='Nein')
 kante('q2', 'u', 'p3a', 'o', label='Ja')
 kante('p3a', 'r', 'doc', 'l', gestrichelt=True)
 kante('p3a', 'u', 'p3b', 'o')
-kante('p3b', 'u', 'd3', 'o')
-kante('d3', 'r', 'p3c', 'l', label='Ja')
-kante('p3c', 'u', 'p4a', 'o', [(R, 870), (M, 870)])
-kante('d3', 'u', 'p4a', 'o', label='Nein · „Link nicht enthalten“')
+kante('p3b', 'u', 'p4a', 'o')
 kante('p4a', 'u', 'p4b', 'o')
-kante('p4b', 'u', 'd5', 'o')
-kante('d5', 'l', 't1', 'o', [(L, 1190)], label='entlassen')
+kante('p4b', 'u', 'p4c', 'o')
+kante('p4c', 'u', 'd5', 'o')
+kante('d5', 'l', 't1', 'o', [(L, 1170)], label='entlassen')
 kante('d5', 'u', 't2', 'o', label='aktuell')
-kante('d5', 'r', 't3', 'o', [(700, 1190)], label='gemischt')
-kante('t1', 'u', 'p6', 'o', [(L, 1385), (M, 1385)])
+kante('d5', 'r', 't3', 'o', [(700, 1170)], label='gemischt')
+kante('t1', 'u', 'p6', 'o', [(L, 1365), (M, 1365)])
 kante('t2', 'u', 'p6', 'o')
-kante('t3', 'u', 'p6', 'o', [(700, 1385), (M, 1385)])
+kante('t3', 'u', 'p6', 'o', [(700, 1365), (M, 1365)])
 kante('p6', 'u', 'q7', 'o')
 kante('q7', 'u', 'q8', 'o', label='Ja')
-kante('t7', 'u', 'q8', 'o', [(R, 1710), (M, 1710)], label='Ja')
+kante('t7', 'u', 'q8', 'o', [(R, 1690), (M, 1690)], label='Ja')
 kante('q8', 'u', 'q9', 'o', label='Ja')
-kante('t8', 'u', 'q9', 'o', [(R, 1920), (M, 1920)], label='Ja')
-kante('q9', 'r', 'h9', 'l', label='Nein')
-kante('h9', 'r', 'q9', 'o', [(RR, 2040), (RR, 1955), (M, 1955)], label='in que_9 bleiben', label_xy=(RR + 8, 2000))
+kante('t8', 'u', 'q9', 'o', [(R, 1900), (M, 1900)], label='Ja')
 kante('q9', 'u', 'q10', 'o', label='Ja')
+kante('t9', 'u', 'q10', 'o', [(R, 2110), (M, 2110)], label='Ja')
 kante('q10', 'r', 'h10', 'l', label='Nein')
-kante('h10', 'r', 'q10', 'o', [(RR, 2240), (RR, 2150), (M, 2150)], label='zurück zu que_10', label_xy=(RR + 8, 2200))
+kante('h10', 'r', 'q10', 'o', [(RR, 2230), (RR, 2140), (M, 2140)], label='zurück zu Frage 10', label_xy=(RR + 8, 2190))
 kante('q10', 'u', 'ende', 'o', label='Ja')
 
 BREITE, HOEHE = 1150, 2450
@@ -145,7 +132,7 @@ def svg_form(n):
     fill, stroke, _, _ = STIL[n['art']]; x, y, w, h = n['cx'] - n['w']/2, n['cy'] - n['h']/2, n['w'], n['h']
     a = n['art']
     if a == 'titel': return ''
-    if a in ('start', 'ende', 'abbruch'): return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{min(h/2, 28)}" fill="{fill}" stroke="{stroke}" stroke-width="2"/>'
+    if a in ('start', 'ende', 'abbruch'): return f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{min(h/2, 28)}" fill="{fill}" stroke="{stroke}" stroke-width="{RAHMEN.get(a, 2)}"/>'
     if a == 'frage':
         cx, cy = n['cx'], n['cy']
         return f'<polygon points="{cx},{y} {x+w},{cy} {cx},{y+h} {x},{cy}" fill="{fill}" stroke="{stroke}" stroke-width="2"/>'
@@ -170,7 +157,7 @@ def svg_kante(e):
             lx, ly, anchor = x1 + (12 if x2 > x1 else -12), y1 - 8, 'start' if x2 > x1 else 'end'
         else:         # senkrecht -> Label rechts neben dem Segment
             lx, ly, anchor = x1 + 8, y1 + (16 if y2 > y1 else -16), 'start'
-        s += (f'<text x="{lx}" y="{ly}" font-size="11" font-weight="bold" fill="{CI["blau"]}" text-anchor="{anchor}" '
+        s += (f'<text x="{lx}" y="{ly}" font-size="11" font-weight="bold" fill="{CI["grau"]}" text-anchor="{anchor}" '
               f'paint-order="stroke" stroke="{CI["weiss"]}" stroke-width="4">{escape(e["label"])}</text>')
     return s
 
@@ -187,7 +174,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 # ---------------- draw.io ----------------
 def dio_stil(n):
     fill, stroke, farbe, fett = STIL[n['art']]
-    basis = f'whiteSpace=wrap;html=1;fontFamily={FONT};fontSize=12;fontColor={farbe};fillColor={fill};strokeColor={stroke};strokeWidth=2;'
+    basis = f'whiteSpace=wrap;html=1;fontFamily={FONT};fontSize=12;fontColor={farbe};fillColor={fill};strokeColor={stroke};strokeWidth={RAHMEN.get(n["art"], 2)};'
     a = n['art']
     if a == 'titel': return f'text;html=1;align=center;verticalAlign=middle;fontFamily={FONT};fontSize={20 if n["id"]=="titel" else 14};fontColor={farbe};fontStyle={1 if n["id"]=="leg" else 0};'
     if a in ('start', 'ende', 'abbruch'): return 'rounded=1;arcSize=50;' + basis
@@ -209,7 +196,7 @@ for n in N.values():
 for i, e in enumerate(E):
     ex, ey = PORT[e['pa']]; nx, ny = PORT[e['pb']]
     st = (f'endArrow=block;endFill=1;html=1;rounded=0;strokeColor={CI["grau"]};strokeWidth=1.6;fontFamily={FONT};fontSize=11;'
-          f'fontColor={CI["blau"]};fontStyle=1;labelBackgroundColor={CI["weiss"]};'
+          f'fontColor={CI["grau"]};fontStyle=1;labelBackgroundColor={CI["weiss"]};'
           f'exitX={ex};exitY={ey};exitDx=0;exitDy=0;entryX={nx};entryY={ny};entryDx=0;entryDy=0;' + ('dashed=1;' if e['gestrichelt'] else ''))
     pts = ''.join(f'<mxPoint x="{x}" y="{y}"/>' for x, y in e['punkte'])
     zellen.append(f'<mxCell id="e{i}" value="{escape(e["label"] or "")}" style="{st}" edge="1" parent="1" source="{e["a"]}" target="{e["b"]}">'

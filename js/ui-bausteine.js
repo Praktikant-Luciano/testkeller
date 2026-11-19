@@ -33,7 +33,7 @@
       z: L.leererZustand(),
       optionen: opts.optionen || {},
       speicherInfo: S.ordnerZugriffMoeglich()
-        ? 'Ordnerzugriff verfügbar: Bei „Erledigt“ (Schritt 3) Zielordner wählen.'
+        ? 'Ordnerzugriff verfügbar: Bei „Erledigt“ (Frage 3) Zielordner wählen.'
         : 'Dieser Browser kann nicht direkt in Ordner schreiben. Bericht wird als Download bereitgestellt.',
       hinweise: {}, // flüchtige Meldungen je Schritt
       auswertung: null,
@@ -114,118 +114,105 @@
 
   R.que_3 = (ctx) => {
     const q = ctx.z.que_3, teile = [];
-    // Teil 1: Ordner
-    teile.push(h('p', { class: 'dc-frage' }, 'Ordner anlegen unter ',
-      h('a', { href: L.KONFIG.explorerLink, target: '_blank', rel: 'noopener' }, '(Explorer-Link tba)'),
-      ' und eindeutig benennen und Pfad zum Ordner hier eingeben:'));
+    // Teil 1: Ordner unter festem Pfad anlegen
+    teile.push(h('p', { class: 'dc-frage' }, T.que_3_ordner));
     teile.push(h('div', { class: 'dc-zeile' },
-      h('label', { for: 'pfad' }, 'Ordnerpfad'),
-      textfeld(ctx, 'pfad', q.ordnerPfad, (v) => { q.ordnerPfad = v; }, { id: 'pfad', readonly: q.ordnerErledigt, placeholder: 'z. B. \\\\server\\PDok\\2026-001' })));
+      h('code', { class: 'dc-pfad', 'data-key': 'zielpfad', 'aria-label': 'Zielpfad' }, L.KONFIG.zielPfad),
+      h('button', { type: 'button', class: 'dc-btn dc-btn--sekundaer dc-btn--klein', 'data-key': 'pfad_kopieren', onclick: async (e) => {
+        let ok = false;
+        try { await navigator.clipboard.writeText(L.KONFIG.zielPfad); ok = true; } catch (_) { /* z. B. file:// ohne Berechtigung */ }
+        e.target.textContent = ok ? 'Kopiert ✓' : 'Pfad markieren + Strg+C';
+      } }, 'Pfad kopieren')));
     if (!q.ordnerErledigt) {
+      if (S.ordnerZugriffMoeglich()) teile.push(h('p', null, 'Nach „Erledigt“ den soeben angelegten Ordner im Dialog auswählen. Dort wird Abschlussbericht.txt angelegt.'));
       teile.push(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', async () => {
         if (S.ordnerZugriffMoeglich()) {
           const r = await S.ordnerWaehlen();
-          if (!r.ok) {
-            ctx.speicherInfo = r.grund === 'abgebrochen' || r.grund === 'abgelehnt'
-              ? 'Kein Zielordner gewählt. Bericht wird als Download bereitgestellt (oder erneut „Ordner wählen“).'
-              : 'Ordnerzugriff fehlgeschlagen. Bericht wird als Download bereitgestellt.';
-          }
+          if (r.ok) ctx.z.meta.ordnerName = r.name;
+          else ctx.speicherInfo = r.grund === 'abgebrochen' || r.grund === 'abgelehnt'
+            ? 'Kein Ordner gewählt. Bericht wird als Download bereitgestellt (oder „Ordner wählen“).'
+            : 'Ordnerzugriff fehlgeschlagen. Bericht wird als Download bereitgestellt.';
         }
         q.ordnerErledigt = true;
         ctx.z.meta.erstellt = new Date().toISOString();
         ctx.aktualisieren();
         if (S.ordner) await ctx.jetztSpeichern();
-      }, q.ordnerPfad.trim() === '', { 'data-key': 'ordner_erledigt' })));
+      }, false, { 'data-key': 'ordner_erledigt' })));
       return h('div', null, teile);
     }
     teile.push(meldung('ok', S.ordner
-      ? `${L.KONFIG.dateiname} im gewählten Ordner „${S.ordner.name}“ angelegt.`
+      ? `${L.KONFIG.dateiname} im Ordner „${S.ordner.name}“ angelegt.`
       : `${L.KONFIG.dateiname} angelegt (im Browser; Download über „Bericht herunterladen“).`));
 
     // Teil 2: Ticket
     const t2 = h('div', { class: 'dc-teil' },
       h('p', { class: 'dc-frage' }, T.que_3_ticket + ' ',
-        h('a', { href: L.KONFIG.ticketSystemLink, target: '_blank', rel: 'noopener' }, 'Zum Ticket-System (Dummy-Link)')));
-    if (!q.ticketErledigt) {
-      t2.append(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', () => { q.ticketErledigt = true; ctx.aktualisieren(); }, false, { 'data-key': 'ticket_erledigt' })));
-      teile.push(t2);
-      return h('div', null, teile);
-    }
-    t2.append(meldung('ok', 'Ticket angelegt und zugewiesen.'));
+        h('a', { href: L.KONFIG.ticketSystemLink, target: '_blank', rel: 'noopener' }, 'Serviceware-Portal'), '.'));
+    t2.append(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', () => { q.ticketErledigt = true; ctx.aktualisieren(); }, q.ticketErledigt, { 'data-key': 'ticket_erledigt' })));
     teile.push(t2);
-
-    // Teil 3: sub_que_3
-    const t3 = h('div', { class: 'dc-teil' });
-    t3.append(h('p', { class: 'dc-frage', id: 'lbl_sq3' }, T.sub_que_3),
-      h('div', { class: 'dc-jn', role: 'group', 'aria-labelledby': 'lbl_sq3' },
-        ['y', 'n'].map((w) => h('button', {
-          type: 'button', class: 'dc-btn', 'aria-pressed': String(q.linkDokumentieren === w), 'data-key': 'sq3_' + w,
-          onclick: () => { q.linkDokumentieren = w; if (w === 'n') q.linkGespeichert = false; ctx.aktualisieren(); },
-        }, w === 'y' ? 'Ja' : 'Nein'))));
-    if (q.linkDokumentieren === 'y') {
-      t3.append(h('div', { class: 'dc-zeile' },
-        h('label', { for: 'ticketlink' }, 'Ticket-Link'),
-        textfeld(ctx, 'ticketlink', q.ticketLink, (v) => { q.ticketLink = v; q.linkGespeichert = false; }, { id: 'ticketlink', type: 'url' })),
-      h('div', { class: 'dc-aktionen' }, knopf('Speichern in Abschlussbericht.txt', async () => {
-        q.linkGespeichert = true; ctx.aktualisieren(); if (S.ordner) await ctx.jetztSpeichern();
-      }, q.ticketLink.trim() === '', { 'data-key': 'link_speichern' })));
-      if (q.linkGespeichert) t3.append(meldung('ok', T.sub_que_3_ja));
-    }
-    if (q.linkDokumentieren === 'n') t3.append(meldung('info', T.sub_que_3_nein));
-    teile.push(t3);
-
-    const offen = L.pruefeSchritt('que_3', Object.assign({}, ctx.z, { que_3: Object.assign({}, q, { weiter: true }) }));
-    if (!q.weiter) teile.push(h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { q.weiter = true; ctx.aktualisieren(); }, offen.status !== 'erledigt', { 'data-key': 'q3_weiter' })));
     return h('div', null, teile);
   };
 
   R.que_4 = (ctx) => {
-    const q = ctx.z.que_4, max = L.KONFIG.maxZeilen, umfang = L.pruefeUmfang(q);
-    const zeilen = (liste, art) => liste.map((eintrag, i) => {
-      const entfernen = liste.length > 1
-        ? h('button', { type: 'button', class: 'dc-btn dc-btn--sekundaer dc-btn--klein', 'aria-label': `${art} #${i + 1} entfernen`, onclick: () => { liste.splice(i, 1); ctx.aktualisieren(); } }, '−')
-        : null;
-      if (art === 'Zeitraum') {
-        return h('div', { class: 'dc-zeile' },
-          h('label', { for: `zv${i}` }, `Zeitraum #${i + 1}`),
-          textfeld(ctx, `zv${i}`, eintrag.von, (v) => { eintrag.von = v; }, { id: `zv${i}`, class: 'dc-input dc-input--datum', placeholder: 'TT.MM.JJJJ', inputmode: 'numeric', 'aria-label': `Zeitraum #${i + 1} von` }),
-          '–',
-          textfeld(ctx, `zb${i}`, eintrag.bis, (v) => { eintrag.bis = v; }, { class: 'dc-input dc-input--datum', placeholder: 'TT.MM.JJJJ', inputmode: 'numeric', 'aria-label': `Zeitraum #${i + 1} bis` }),
-          entfernen);
-      }
-      return h('div', { class: 'dc-zeile' },
-        h('label', { for: `f${i}` }, `Fall #${i + 1}`),
-        textfeld(ctx, `f${i}`, eintrag, (v) => { liste[i] = v; }, { id: `f${i}`, placeholder: 'Fallnummer' }),
-        entfernen);
-    });
-    const plus = (liste, neu, art) => h('button', {
-      type: 'button', class: 'dc-btn dc-btn--sekundaer dc-btn--klein', disabled: liste.length >= max,
-      'data-key': 'plus_' + art, 'aria-label': `${art} hinzufügen`, onclick: () => { liste.push(neu()); ctx.aktualisieren(); },
-    }, '+ ' + art);
-
+    const q = ctx.z.que_4, anzahl = L.pruefeAnzahl(q);
+    // Teilschritt 1: Anzahl
+    const zahl = (key, feld, label) => h('td', null, h('input', {
+      class: 'dc-input dc-input--zahl', type: 'text', inputmode: 'numeric', autocomplete: 'off',
+      value: q[feld], 'data-key': key, 'aria-label': 'Anzahl ' + label, placeholder: '0',
+      oninput: (e) => { q[feld] = e.target.value; q.anzahlBestaetigt = false; q.umfangBestaetigt = false; ctx.aktualisieren(); },
+    }));
     const teil1 = h('div', null,
-      h('p', { class: 'dc-frage' }, T.que_4_wie),
-      h('h3', null, 'Nach Zeitraum'), zeilen(q.zeitraeume, 'Zeitraum'), plus(q.zeitraeume, () => ({ von: '', bis: '' }), 'Zeitraum'),
-      h('p', null, h('em', { class: 'texthervorhebung' }, 'und/oder')),
-      h('h3', null, 'Nach Fallnummer'), zeilen(q.faelle, 'Fall'), plus(q.faelle, () => '', 'Fall'),
-      fehlerliste(umfang.fehler));
-    if (!q.umfangBestaetigt) {
-      teil1.append(h('div', { class: 'dc-aktionen' }, knopf('Fertig und weiter', () => { q.umfangBestaetigt = true; ctx.aktualisieren(); }, !umfang.ok, { 'data-key': 'q4_fertig' })));
+      h('h3', null, 'Teilschritt 1 · Anzahl'),
+      h('p', { class: 'dc-frage' }, T.que_4_anzahl),
+      h('table', { class: 'dc-tabelle' },
+        h('thead', null, h('tr', null, h('th', null, ''), h('th', { scope: 'col' }, 'Fälle'), h('th', { scope: 'col' }, 'Zeiträume'))),
+        h('tbody', null, h('tr', null, h('th', { scope: 'row' }, `Anzahl (0–${L.KONFIG.maxZeilen})`), zahl('anz_f', 'anzahlFaelle', 'Fälle'), zahl('anz_z', 'anzahlZeitraeume', 'Zeiträume')))),
+      (q.anzahlFaelle !== '' || q.anzahlZeitraeume !== '') ? fehlerliste(anzahl.fehler) : null);
+    if (!q.anzahlBestaetigt) {
+      teil1.append(h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { L.zeilenAnpassen(q); q.anzahlBestaetigt = true; ctx.aktualisieren(); }, !anzahl.ok, { 'data-key': 'q4_anzahl_weiter' })));
       return teil1;
     }
-    const teil2 = h('div', { class: 'dc-teil' },
+
+    // Teilschritt 2: Zeilen laut Anzahl
+    const umfang = L.pruefeUmfang(q);
+    const teil2 = h('div', { class: 'dc-teil' }, h('h3', null, 'Teilschritt 2 · Umfang'), h('p', { class: 'dc-frage' }, T.que_4_wie));
+    if (q.zeitraeume.length) {
+      teil2.append(h('p', null, h('strong', null, 'Nach Zeitraum')));
+      q.zeitraeume.forEach((z, i) => teil2.append(h('div', { class: 'dc-zeile' },
+        h('label', { for: `zv${i}` }, `Zeitraum #${i + 1}`),
+        textfeld(ctx, `zv${i}`, z.von, (v) => { z.von = v; }, { id: `zv${i}`, class: 'dc-input dc-input--datum', placeholder: 'TT.MM.JJJJ', inputmode: 'numeric', 'aria-label': `Zeitraum #${i + 1} von` }),
+        '–',
+        textfeld(ctx, `zb${i}`, z.bis, (v) => { z.bis = v; }, { class: 'dc-input dc-input--datum', placeholder: 'TT.MM.JJJJ', inputmode: 'numeric', 'aria-label': `Zeitraum #${i + 1} bis` }))));
+    }
+    if (q.zeitraeume.length && q.faelle.length) teil2.append(h('p', null, h('em', { class: 'texthervorhebung' }, 'und')));
+    if (q.faelle.length) {
+      teil2.append(h('p', null, h('strong', null, 'Nach Fallnummer')));
+      q.faelle.forEach((f, i) => teil2.append(h('div', { class: 'dc-zeile' },
+        h('label', { for: `f${i}` }, `Fall #${i + 1}`),
+        textfeld(ctx, `f${i}`, f, (v) => { q.faelle[i] = v; }, { id: `f${i}`, placeholder: 'Fallnummer' }))));
+    }
+    const beruehrt = q.zeitraeume.some((z) => z.von || z.bis) || q.faelle.some((f) => f);
+    if (beruehrt || q.umfangBestaetigt) teil2.append(fehlerliste(umfang.fehler));
+    if (!q.umfangBestaetigt) {
+      teil2.append(h('div', { class: 'dc-aktionen' }, knopf('Fertig und weiter', () => { q.umfangBestaetigt = true; ctx.aktualisieren(); }, !umfang.ok, { 'data-key': 'q4_fertig' })));
+      return h('div', null, teil1, teil2);
+    }
+
+    // Teilschritt 3: Was
+    const teil3 = h('div', { class: 'dc-teil' },
+      h('h3', null, 'Teilschritt 3 · Was'),
       h('p', { class: 'dc-frage' }, T.que_4_was),
       ['komplett', 'teile'].map((w) => h('label', { class: 'dc-wahl' },
         h('input', { type: 'radio', name: 'q4art', value: w, checked: q.art === w, 'data-key': 'q4art_' + w, onchange: () => { q.art = w; ctx.aktualisieren(); } }),
         h('span', null, w === 'komplett' ? T.que_4_komplett : T.que_4_teile))));
     if (q.art === 'teile') {
-      teil2.append(h('textarea', {
+      teil3.append(h('textarea', {
         class: 'dc-input', rows: '3', 'data-key': 'q4teile', 'aria-label': 'Welche Teile des Umfangs?', placeholder: 'Welche Teile? (z. B. nur Pflegeanamnese)',
         oninput: (e) => { q.teileText = e.target.value; ctx.aktualisieren(); },
       }, q.teileText));
     }
-    if (!q.weiter) teil2.append(h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { q.weiter = true; ctx.aktualisieren(); }, !L.pruefeArt(q).ok, { 'data-key': 'q4_weiter' })));
-    return h('div', null, teil1, teil2);
+    if (!q.weiter) teil3.append(h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { q.weiter = true; ctx.aktualisieren(); }, !L.pruefeArt(q).ok, { 'data-key': 'q4_weiter' })));
+    return h('div', null, teil1, teil2, teil3);
   };
 
   R.que_5 = (ctx) => {
@@ -251,7 +238,7 @@
         })))))));
     return h('div', null,
       h('p', { class: 'dc-frage' }, T.que_6),
-      spalten.length === 2 ? h('p', null, 'Bei „gemischt“: je Spalte (entlassen und aktuell) mindestens ein System wählen.') : null,
+      spalten.length === 2 && ctx.optionen.strengGemischt ? h('p', null, 'Bei „gemischt“: je Spalte (entlassen und aktuell) mindestens ein System wählen.') : null,
       tabelle,
       q.weiter ? fehlerliste(p.fehler) : null,
       q.weiter ? null : h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { q.weiter = true; ctx.aktualisieren(); }, !p.ok, { 'data-key': 'q6_weiter' })));
@@ -268,14 +255,14 @@
     h('p', { class: 'dc-frage' }, T.que_8),
     h('ul', null, L.KONFIG.kategorien.map((k) => h('li', null, k))),
     mitTrotzdem('que_8', 'Antwort:')(ctx));
-  R.que_9 = (ctx) => jaNein(ctx, 'que_9', T.que_9);
+  R.que_9 = mitTrotzdem('que_9', T.que_9);
   R.que_10 = (ctx) => jaNein(ctx, 'que_10', T.que_10);
 
   /* ---------- Größere Bausteine ---------- */
   function schrittKarte(ctx, schritt, klasse) {
     const nr = +schritt.id.split('_')[1];
     return h('section', { class: 'dc-karte ' + klasse, id: 'karte_' + schritt.id, 'aria-labelledby': 'h_' + schritt.id },
-      h('div', { class: 'dc-schrittnr' }, `Schritt ${nr} von 10`),
+      h('div', { class: 'dc-schrittnr' }, `Frage ${nr} von 10`),
       h('h2', { id: 'h_' + schritt.id }, schritt.titel),
       R[schritt.id](ctx));
   }
