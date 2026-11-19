@@ -1,0 +1,95 @@
+/*
+ * Komponenten für die Dokucheckliste.
+ * Nutzt ausschließlich die CI-Variablen aus style_CD.css (zuerst einbinden!).
+ * Kontrast (WCAG 2.1, geprüft): Textgrau auf Weiß 5.0:1, auf Beige 4.6:1, Weiß auf UK-Blau 7.9:1,
+ * PMU-Blau auf SALK-Grün 5.9:1. SALK-Grün NICHT als Textfarbe auf Weiß (2.2:1) -> nur Flächen/Rahmen.
+ */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--hintergrund-beige); line-height: 1.5; font-size: 16px; }
+
+.dc-kopf { background: #fff; border-bottom: 4px solid var(--salk-gruen); padding: 16px; }
+.dc-kopf h1 { margin: 0; font-size: 1.5rem; font-weight: 400; color: var(--pmu-blau); }
+.dc-kopf p { margin: 4px 0 0; }
+
+.dc-haupt { max-width: 760px; margin: 0 auto; padding: 16px; }
+.dc-haupt--breit { max-width: 1200px; }
+
+.dc-karte { background: #fff; border-radius: 6px; padding: 20px; margin-bottom: 16px; border-left: 6px solid var(--hellgrau); }
+.dc-karte--aktiv { border-left-color: var(--uk-blau); }
+.dc-karte--erledigt { border-left-color: var(--salk-gruen); }
+.dc-karte--abbruch { border-left-color: var(--pmu-blau); }
+.dc-karte h2 { margin: 0 0 4px; font-size: 1.25rem; font-weight: 400; color: var(--pmu-blau); }
+.dc-karte h3 { margin: 16px 0 8px; font-size: 1rem; font-weight: 700; color: var(--pmu-blau); }
+.dc-schrittnr { font-size: .85rem; font-weight: 700; color: var(--uk-blau); text-transform: uppercase; letter-spacing: .04em; }
+.dc-frage { margin: 8px 0 12px; color: var(--pmu-blau); font-weight: 700; }
+.dc-teil { border-top: 1px solid var(--hellgrau); margin-top: 16px; padding-top: 12px; }
+
+/* Buttons */
+.dc-btn { font: inherit; border: 2px solid var(--uk-blau); background: var(--uk-blau); color: #fff;
+  padding: 10px 18px; border-radius: 4px; cursor: pointer; min-height: 44px; }
+.dc-btn:hover:not(:disabled) { background: var(--pmu-blau); border-color: var(--pmu-blau); }
+.dc-btn:disabled { background: var(--hellgrau); border-color: var(--hellgrau); color: var(--textgrau); cursor: not-allowed; }
+.dc-btn--sekundaer { background: #fff; color: var(--uk-blau); }
+.dc-btn--sekundaer:hover:not(:disabled) { color: #fff; }
+.dc-btn--klein { min-height: 36px; padding: 4px 12px; }
+.dc-btn:focus-visible, .dc-input:focus-visible, .dc-wahl input:focus-visible + span { outline: 3px solid var(--salk-gruen); outline-offset: 2px; }
+.dc-aktionen { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+/* Ja/Nein */
+.dc-jn { display: inline-flex; gap: 8px; }
+.dc-jn .dc-btn { min-width: 96px; background: #fff; color: var(--uk-blau); }
+.dc-jn .dc-btn[aria-pressed="true"] { background: var(--uk-blau); color: #fff; }
+
+/* Eingaben */
+.dc-input { font: inherit; color: var(--pmu-blau); border: 2px solid var(--hellgrau); border-radius: 4px; padding: 8px 10px; min-height: 44px; width: 100%; }
+.dc-input[readonly] { background: var(--hintergrund-beige); }
+.dc-input--datum { width: 9.5em; }
+.dc-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.dc-zeile label { min-width: 6.5em; font-weight: 700; }
+.dc-zeile .dc-input:not(.dc-input--datum) { flex: 1 1 12em; width: auto; }
+.dc-wahl { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; cursor: pointer; }
+.dc-wahl input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--uk-blau); }
+
+/* Tabelle que_6 */
+.dc-tabelle { border-collapse: collapse; width: 100%; max-width: 420px; }
+.dc-tabelle th, .dc-tabelle td { border-bottom: 1px solid var(--hellgrau); padding: 8px; text-align: left; }
+.dc-tabelle th { color: var(--pmu-blau); }
+.dc-tabelle td input { width: 20px; height: 20px; accent-color: var(--uk-blau); }
+
+/* Meldungen */
+.dc-meldung { padding: 10px 12px; border-radius: 4px; margin: 10px 0; }
+.dc-meldung--info { background: var(--hintergrund-beige); border-left: 4px solid var(--uk-blau); }
+.dc-meldung--ok { background: var(--hintergrund-beige); border-left: 4px solid var(--salk-gruen); }
+.dc-meldung--warnung { background: var(--salk-gruen); color: var(--pmu-blau); font-weight: 700; }
+.dc-fehler { margin: 6px 0 0; padding-left: 20px; font-size: .9rem; }
+
+/* Fortschritt */
+.dc-fortschritt { display: flex; gap: 4px; margin: 0 0 16px; padding: 0; list-style: none; }
+.dc-fortschritt li { flex: 1; height: 8px; border-radius: 4px; background: var(--hellgrau); }
+.dc-fortschritt li.erledigt { background: var(--salk-gruen); }
+.dc-fortschritt li.aktiv { background: var(--uk-blau); }
+.dc-fortschritt-text { margin: -8px 0 12px; font-size: .9rem; }
+
+/* Statusleiste Speichern */
+.dc-speicherstatus { font-size: .9rem; background: #fff; border-radius: 6px; padding: 10px 12px; margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: space-between; }
+
+/* Bericht */
+.dc-bericht { background: var(--hintergrund-beige); border: 1px solid var(--hellgrau); padding: 12px; white-space: pre-wrap; word-break: break-word;
+  font-family: Consolas, "Courier New", monospace; font-size: .85rem; color: var(--pmu-blau); margin: 0; }
+
+/* Variante B: Layout mit Seitenleiste */
+.dc-raster { display: grid; grid-template-columns: 220px minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+.dc-seite { position: sticky; top: 16px; }
+.dc-nav { list-style: none; margin: 0; padding: 0; background: #fff; border-radius: 6px; }
+.dc-nav li { padding: 8px 12px; border-bottom: 1px solid var(--hintergrund-beige); font-size: .9rem; }
+.dc-nav li.erledigt::before { content: "✓ "; color: var(--pmu-blau); font-weight: 700; }
+.dc-nav li.aktiv { font-weight: 700; color: var(--pmu-blau); border-left: 4px solid var(--uk-blau); }
+.dc-nav li.gesperrt { color: var(--hellgrau); }
+.dc-nav a { color: inherit; text-decoration: none; }
+@media (max-width: 1000px) {
+  .dc-raster { grid-template-columns: 1fr; }
+  .dc-seite { position: static; }
+}
+
+a { color: var(--uk-blau); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
