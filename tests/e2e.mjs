@@ -79,7 +79,7 @@ async function durchlauf(page, { mitTrotzdem = false } = {}) {
 
 const browser = await chromium.launch();
 let fehler = 0;
-for (const variante of ['variante-a-wizard', 'variante-b-formular']) {
+for (const variante of ['variante-a-wizard', 'variante-b-formular', 'einzeldatei/Dokucheckliste_Variante_A.html', 'einzeldatei/Dokucheckliste_Variante_B.html']) {
   for (const modus of ['fs', 'download']) {
     const name = `${variante} / ${modus}`;
     const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 } });
@@ -87,7 +87,7 @@ for (const variante of ['variante-a-wizard', 'variante-b-formular']) {
     const konsolenFehler = [];
     page.on('pageerror', (e) => konsolenFehler.push(e.message));
     await page.addInitScript(modus === 'fs' ? fsMock : ohneFs);
-    await page.goto(pathToFileURL(path.join(wurzel, variante, 'index.html')).href);
+    await page.goto(pathToFileURL(path.join(wurzel, variante.endsWith('.html') ? variante : path.join(variante, 'index.html'))).href);
     try {
       const bericht = await durchlauf(page, { mitTrotzdem: modus === 'download' });
       assert.match(bericht, /Status: +ABGESCHLOSSEN/);
@@ -107,12 +107,12 @@ for (const variante of ['variante-a-wizard', 'variante-b-formular']) {
         assert.ok(inhalt.startsWith('\uFEFF') && inhalt.includes('\r\n'));
       }
       assert.deepEqual(konsolenFehler, []);
-      if (shotDir) await page.screenshot({ path: path.join(shotDir, `${variante}-${modus}-ende.png`), fullPage: true });
+      if (shotDir) await page.screenshot({ path: path.join(shotDir, `${path.basename(variante)}-${modus}-ende.png`), fullPage: true });
       console.log('ok  ', name);
     } catch (e) {
       fehler++;
       console.log('FAIL', name, '\n', e.message);
-      if (shotDir) await page.screenshot({ path: path.join(shotDir, `${variante}-${modus}-FEHLER.png`), fullPage: true });
+      if (shotDir) await page.screenshot({ path: path.join(shotDir, `${path.basename(variante)}-${modus}-FEHLER.png`), fullPage: true });
     }
     await context.close();
   }

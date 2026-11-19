@@ -5,7 +5,10 @@ Erzeugt `Abschlussbericht.txt` aus den Eingaben. Kein Build, keine Abhängigkeit
 Grundlage: `docs/Dokucheckliste_pdok_v3.docx`.
 
 ## Starten
-`index.html` im Browser öffnen (Doppelklick genügt) und Variante wählen.
+**Am einfachsten:** `einzeldatei/Dokucheckliste_Variante_A.html` bzw. `…_B.html` öffnen – je eine Datei, alles eingebettet, funktioniert auch ohne Entpacken.
+Nach Änderungen an `js/` oder `css/` neu erzeugen: `npm run build`.
+
+Alternativ (ZIP **entpacken**!): `index.html` im Browser öffnen (Doppelklick genügt) und Variante wählen.
 
 | Variante | Ordner | Für wen |
 |----------|--------|---------|
