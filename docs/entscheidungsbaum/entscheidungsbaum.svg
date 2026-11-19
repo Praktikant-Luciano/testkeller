@@ -14,8 +14,8 @@
 <path d="M550.0,390 L680.0,390" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="562.0" y="382" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Nein</text>
 <path d="M420,450.0 L420,500.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/><text x="428" y="466.0" font-size="11" font-weight="bold" fill="#6E6F70" text-anchor="start" paint-order="stroke" stroke="#FFFFFF" stroke-width="4">Ja</text>
 <path d="M580.0,545 L700.0,545" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)" stroke-dasharray="6 4"/>
-<path d="M420,590.0 L420,638.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
-<path d="M420,702.0 L420,752.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,590.0 L420,632.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
+<path d="M420,708.0 L420,752.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
 <path d="M420,828.0 L420,872.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
 <path d="M420,948.0 L420,992.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
 <path d="M420,1068.0 L420,1120.0" fill="none" stroke="#6E6F70" stroke-width="1.6" marker-end="url(#pfeil)"/>
@@ -56,16 +56,17 @@
 <text x="820" y="390.0" font-size="12" font-weight="normal" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">Stabstelle Pflegeinformatik</text>
 <text x="820" y="405.0" font-size="12" font-weight="normal" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central">des UKS ist nicht zuständig</text>
 <rect x="260.0" y="500.0" width="320" height="90" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
-<text x="420" y="522.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 3 · Ordner eindeutig benennen</text>
-<text x="420" y="537.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">und anlegen unter</text>
-<text x="420" y="552.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">G:\…\Beschwerden_Schadensfälle\test cp</text>
+<text x="420" y="522.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 3 · Ordner anlegen unter</text>
+<text x="420" y="537.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">G:\…\Beschwerden_Schadensfälle\test cp</text>
+<text x="420" y="552.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Ordnername eingeben (Pflicht)</text>
 <text x="420" y="567.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">→ „Erledigt“</text>
 <path d="M700.0,513.0 H940.0 V569.0 Q880.0,555.0 820.0,569.0 T700.0,569.0 Z" fill="#FFFFFF" stroke="#94BF05" stroke-width="2"/>
 <text x="820" y="537.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Abschlussbericht.txt</text>
 <text x="820" y="552.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">wird im Ordner angelegt</text>
-<rect x="260.0" y="638.0" width="320" height="64" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
-<text x="420" y="662.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Ticket als Störung anlegen und</text>
-<text x="420" y="677.5" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">sich selbst zuweisen → „Erledigt“</text>
+<rect x="260.0" y="632.0" width="320" height="76" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
+<text x="420" y="655.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Ticket als Störung anlegen und</text>
+<text x="420" y="670.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">sich selbst zuweisen</text>
+<text x="420" y="685.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Ticketnummer eingeben (Pflicht) → „Erledigt“</text>
 <rect x="260.0" y="752.0" width="320" height="76" rx="6" fill="#FFFFFF" stroke="#6E6F70" stroke-width="2"/>
 <text x="420" y="775.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Frage 4 · Teilschritt 1</text>
 <text x="420" y="790.0" font-size="12" font-weight="normal" fill="#6E6F70" text-anchor="middle" dominant-baseline="central">Anzahl Fälle (0–5) und Zeiträume (0–5)</text>

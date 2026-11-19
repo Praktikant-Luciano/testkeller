@@ -246,7 +246,7 @@ a { color: var(--dc-primaer); }
     return {
       que_1: null,                 // 'y' | 'n'
       que_2: null,
-      que_3: { ordnerErledigt: false, ticketErledigt: false },
+      que_3: { ordnerName: '', ordnerErledigt: false, ticketNummer: '', ticketErledigt: false },
       que_4: {
         anzahlFaelle: '', anzahlZeitraeume: '', // Teilschritt 1 (leer = 0)
         anzahlBestaetigt: false,
@@ -405,8 +405,12 @@ a { color: var(--dc-primaer); }
         if (z.que_2 === 'y') return { status: 'erledigt' };
         if (z.que_2 === 'n') return { status: 'abbruch', meldung: TEXT.que_2_abbruch };
         return { status: 'offen' };
-      case 'que_3':
-        return z.que_3.ordnerErledigt && z.que_3.ticketErledigt ? { status: 'erledigt' } : { status: 'offen' };
+      case 'que_3': {
+        const q = z.que_3, fehler = [];
+        if (leer(q.ordnerName) || !q.ordnerErledigt) fehler.push('Ordnername eingeben und „Erledigt“ drücken');
+        if (leer(q.ticketNummer) || !q.ticketErledigt) fehler.push('Ticketnummer eingeben und „Erledigt“ drücken');
+        return fehler.length ? { status: 'offen', fehler } : { status: 'erledigt' };
+      }
       case 'que_4': {
         const q = z.que_4;
         const a = pruefeAnzahl(q);
@@ -455,7 +459,7 @@ a { color: var(--dc-primaer); }
 
   /** Abschlussbericht.txt existiert ab "Erledigt" (Ordner angelegt) in Frage 3. */
   function berichtAngelegt(z) {
-    return z.que_1 === 'y' && z.que_2 === 'y' && z.que_3.ordnerErledigt;
+    return z.que_1 === 'y' && z.que_2 === 'y' && z.que_3.ordnerErledigt && !leer(z.que_3.ordnerName);
   }
 
   /* ---------- Abschlussbericht ---------- */
@@ -478,7 +482,9 @@ a { color: var(--dc-primaer); }
     if (z.meta.erstellt) L.push('Angelegt:   ' + formatZeit(new Date(z.meta.erstellt)));
     L.push('Stand:      ' + formatZeit(jetzt));
     L.push('Status:     ' + (e.ende ? 'ABGESCHLOSSEN' : e.abbruch ? 'ABGEBROCHEN – ' + e.abbruch : 'IN BEARBEITUNG (' + frageName(e.aktuell) + ')'));
-    L.push('Ablage:     ' + KONFIG.zielPfad + '\\' + (z.meta.ordnerName || '<Ordnername nicht erfasst>'));
+    L.push('Ablage:     ' + KONFIG.zielPfad + '\\' + (leer(z.que_3.ordnerName) ? '–' : z.que_3.ordnerName.trim()));
+    if (!leer(z.que_3.ticketNummer)) L.push('Ticket:     ' + z.que_3.ticketNummer.trim());
+    if (z.meta.ordnerName && z.meta.ordnerName !== (z.que_3.ordnerName || '').trim()) L.push('Hinweis:    Bericht gespeichert in Ordner „' + z.meta.ordnerName + '“ (weicht vom Ordnernamen ab)');
     L.push('');
 
     const zeile = (nr, titel, text) => L.push(`[Frage ${nr}] ${titel}: ${text}`);
@@ -486,8 +492,8 @@ a { color: var(--dc-primaer); }
     if (erreicht.has('que_1') && z.que_1) zeile(1, 'Anfrage berechtigt', jn(z.que_1));
     if (erreicht.has('que_2') && z.que_2) zeile(2, 'Zuständigkeit UKS Campus LKH / CDK', jn(z.que_2));
     if (erreicht.has('que_3')) {
-      if (z.que_3.ordnerErledigt) zeile(3, 'Ordner angelegt', 'Ja');
-      if (z.que_3.ticketErledigt) L.push('    Ticket als Störung angelegt und selbst zugewiesen: Ja');
+      if (z.que_3.ordnerErledigt) zeile(3, 'Ordner angelegt', z.que_3.ordnerName.trim());
+      if (z.que_3.ticketErledigt) L.push('    Ticket als Störung angelegt und selbst zugewiesen: ' + z.que_3.ticketNummer.trim());
     }
     if (erreicht.has('que_4') && z.que_4.umfangBestaetigt) {
       const q = z.que_4;
@@ -739,6 +745,9 @@ a { color: var(--dc-primaer); }
         try { await navigator.clipboard.writeText(L.KONFIG.zielPfad); ok = true; } catch (_) { /* z. B. file:// ohne Berechtigung */ }
         e.target.textContent = ok ? 'Kopiert ✓' : 'Pfad markieren + Strg+C';
       } }, 'Pfad kopieren')));
+    teile.push(h('div', { class: 'dc-zeile' },
+      h('label', { for: 'ordnername' }, 'Ordnername *'),
+      textfeld(ctx, 'ordnername', q.ordnerName, (v) => { q.ordnerName = v; }, { id: 'ordnername', required: true, readonly: q.ordnerErledigt, placeholder: 'z. B. 2026-11-19_Beschwerde_Muster', autocomplete: 'off' })));
     if (!q.ordnerErledigt) {
       if (S.ordnerZugriffMoeglich()) teile.push(h('p', null, 'Nach „Erledigt“ den soeben angelegten Ordner im Dialog auswählen. Dort wird Abschlussbericht.txt angelegt.'));
       teile.push(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', async () => {
@@ -753,7 +762,7 @@ a { color: var(--dc-primaer); }
         ctx.z.meta.erstellt = new Date().toISOString();
         ctx.aktualisieren();
         if (S.ordner) await ctx.jetztSpeichern();
-      }, false, { 'data-key': 'ordner_erledigt' })));
+      }, q.ordnerName.trim() === '', { 'data-key': 'ordner_erledigt' })));
       return h('div', null, teile);
     }
     teile.push(meldung('ok', S.ordner
@@ -764,7 +773,10 @@ a { color: var(--dc-primaer); }
     const t2 = h('div', { class: 'dc-teil' },
       h('p', { class: 'dc-frage' }, T.que_3_ticket + ' ',
         h('a', { href: L.KONFIG.ticketSystemLink, target: '_blank', rel: 'noopener' }, 'Serviceware-Portal'), '.'));
-    t2.append(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', () => { q.ticketErledigt = true; ctx.aktualisieren(); }, q.ticketErledigt, { 'data-key': 'ticket_erledigt' })));
+    t2.append(h('div', { class: 'dc-zeile' },
+      h('label', { for: 'ticketnr' }, 'Ticketnummer *'),
+      textfeld(ctx, 'ticketnr', q.ticketNummer, (v) => { q.ticketNummer = v; }, { id: 'ticketnr', required: true, readonly: q.ticketErledigt, placeholder: 'Ticketnummer', autocomplete: 'off' })));
+    if (!q.ticketErledigt) t2.append(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', () => { q.ticketErledigt = true; ctx.aktualisieren(); }, q.ticketNummer.trim() === '', { 'data-key': 'ticket_erledigt' })));
     teile.push(t2);
     return h('div', null, teile);
   };

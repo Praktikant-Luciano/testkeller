@@ -10,7 +10,6 @@
 ## Ausstehend (Nutzer)
 - [ ] `einzeldatei/Dokucheckliste_PDok.html` durchklicken und Feedback geben
 - [ ] Kategorien Frage 8 liefern (Eintrag: `js/logik.js` → `KONFIG.kategorien`)
-- [ ] Entscheiden: Feld „Ordnername“ und „Ticketnummer“ in Frage 3? (ANALYSE N2, N3)
 - [ ] Serviceware-Link im Kliniknetz testen
 - [ ] Datenschutz klären: Fallnummern im Abschlussbericht (DSB)
 - [ ] Prüfen, ob Chrome/Edge im Haus den Ordnerzugriff erlauben (Gruppenrichtlinie)

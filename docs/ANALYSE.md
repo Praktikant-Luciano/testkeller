@@ -5,9 +5,9 @@ Legende: 🔴 Lücke mit Risiko · 🟡 Unklarheit · ✅ so umgesetzt
 
 | # | Stelle | Befund | Umsetzung |
 |---|--------|--------|-----------|
-| N1 🟡 | Kopf | „alle sub_que_x zu F“ – Satz bricht ab. Es gibt aktuell keine sub_que mehr. | Ohne Wirkung. Bitte ergänzen, falls künftig Unterfragen kommen. |
-| N2 🔴 | Frage 3 | Ordnername wird nicht mehr abgefragt. Der Bericht kennt den Ordner nur, wenn er im Dialog gewählt wurde (Chrome/Edge). | ✅ Bericht: Ablage = Zielpfad + gewählter Ordner, sonst „&lt;Ordnername nicht erfasst&gt;“. Empfehlung: Feld „Ordnername“. |
-| N3 🔴 | Frage 3 | Ticket-Link/-Nummer wird nicht mehr dokumentiert → Bericht und Ticket sind nicht verknüpft. | Empfehlung: Pflichtfeld „Ticketnummer“. |
+| N1 🟡 | Kopf | „alle sub_que_x zu F“ – Satz bricht ab. Es gibt aktuell keine sub_que mehr. | ✅ Klärung Nutzer: „sub_que_x → Folgefrage“. Aktuell keine Unterfragen, daher ohne Wirkung. |
+| N2 🔴 | Frage 3 | Ordnername wird nicht mehr abgefragt. Der Bericht kennt den Ordner nur, wenn er im Dialog gewählt wurde (Chrome/Edge). | ✅ Pflichtfeld „Ordnername“ (Entscheidung Nutzer). Bericht: Ablage = Zielpfad + Ordnername; weicht der gewählte Speicherordner ab, wird das vermerkt. |
+| N3 🔴 | Frage 3 | Ticket-Link/-Nummer wird nicht mehr dokumentiert → Bericht und Ticket sind nicht verknüpft. | ✅ Pflichtfeld „Ticketnummer“ (Entscheidung Nutzer), steht im Berichtskopf. |
 | N4 🟡 | Frage 3 | Pfad G:\… kann ein Browser weder öffnen noch anlegen. | ✅ Pfad wird angezeigt + Button „Pfad kopieren“ (für den Explorer). |
 | N5 🟡 | Frage 3 | Serviceware-Link ist nur im Kliniknetz erreichbar. | ✅ Eingebaut, ⚠ nicht getestet (kein Zugriff). |
 | N6 🔴 | Frage 4 TS 2 | Vorlage nennt noch „+“-Button und „5 Zeilen max.“ – widerspricht der festen Anzahl aus Teilschritt 1. | ✅ Annahme: genau so viele Zeilen wie in TS 1 angegeben, kein „+“. |

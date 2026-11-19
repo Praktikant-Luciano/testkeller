@@ -123,6 +123,9 @@
         try { await navigator.clipboard.writeText(L.KONFIG.zielPfad); ok = true; } catch (_) { /* z. B. file:// ohne Berechtigung */ }
         e.target.textContent = ok ? 'Kopiert ✓' : 'Pfad markieren + Strg+C';
       } }, 'Pfad kopieren')));
+    teile.push(h('div', { class: 'dc-zeile' },
+      h('label', { for: 'ordnername' }, 'Ordnername *'),
+      textfeld(ctx, 'ordnername', q.ordnerName, (v) => { q.ordnerName = v; }, { id: 'ordnername', required: true, readonly: q.ordnerErledigt, placeholder: 'z. B. 2026-11-19_Beschwerde_Muster', autocomplete: 'off' })));
     if (!q.ordnerErledigt) {
       if (S.ordnerZugriffMoeglich()) teile.push(h('p', null, 'Nach „Erledigt“ den soeben angelegten Ordner im Dialog auswählen. Dort wird Abschlussbericht.txt angelegt.'));
       teile.push(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', async () => {
@@ -137,7 +140,7 @@
         ctx.z.meta.erstellt = new Date().toISOString();
         ctx.aktualisieren();
         if (S.ordner) await ctx.jetztSpeichern();
-      }, false, { 'data-key': 'ordner_erledigt' })));
+      }, q.ordnerName.trim() === '', { 'data-key': 'ordner_erledigt' })));
       return h('div', null, teile);
     }
     teile.push(meldung('ok', S.ordner
@@ -148,7 +151,10 @@
     const t2 = h('div', { class: 'dc-teil' },
       h('p', { class: 'dc-frage' }, T.que_3_ticket + ' ',
         h('a', { href: L.KONFIG.ticketSystemLink, target: '_blank', rel: 'noopener' }, 'Serviceware-Portal'), '.'));
-    t2.append(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', () => { q.ticketErledigt = true; ctx.aktualisieren(); }, q.ticketErledigt, { 'data-key': 'ticket_erledigt' })));
+    t2.append(h('div', { class: 'dc-zeile' },
+      h('label', { for: 'ticketnr' }, 'Ticketnummer *'),
+      textfeld(ctx, 'ticketnr', q.ticketNummer, (v) => { q.ticketNummer = v; }, { id: 'ticketnr', required: true, readonly: q.ticketErledigt, placeholder: 'Ticketnummer', autocomplete: 'off' })));
+    if (!q.ticketErledigt) t2.append(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', () => { q.ticketErledigt = true; ctx.aktualisieren(); }, q.ticketNummer.trim() === '', { 'data-key': 'ticket_erledigt' })));
     teile.push(t2);
     return h('div', null, teile);
   };

@@ -71,7 +71,7 @@
     return {
       que_1: null,                 // 'y' | 'n'
       que_2: null,
-      que_3: { ordnerErledigt: false, ticketErledigt: false },
+      que_3: { ordnerName: '', ordnerErledigt: false, ticketNummer: '', ticketErledigt: false },
       que_4: {
         anzahlFaelle: '', anzahlZeitraeume: '', // Teilschritt 1 (leer = 0)
         anzahlBestaetigt: false,
@@ -230,8 +230,12 @@
         if (z.que_2 === 'y') return { status: 'erledigt' };
         if (z.que_2 === 'n') return { status: 'abbruch', meldung: TEXT.que_2_abbruch };
         return { status: 'offen' };
-      case 'que_3':
-        return z.que_3.ordnerErledigt && z.que_3.ticketErledigt ? { status: 'erledigt' } : { status: 'offen' };
+      case 'que_3': {
+        const q = z.que_3, fehler = [];
+        if (leer(q.ordnerName) || !q.ordnerErledigt) fehler.push('Ordnername eingeben und „Erledigt“ drücken');
+        if (leer(q.ticketNummer) || !q.ticketErledigt) fehler.push('Ticketnummer eingeben und „Erledigt“ drücken');
+        return fehler.length ? { status: 'offen', fehler } : { status: 'erledigt' };
+      }
       case 'que_4': {
         const q = z.que_4;
         const a = pruefeAnzahl(q);
@@ -280,7 +284,7 @@
 
   /** Abschlussbericht.txt existiert ab "Erledigt" (Ordner angelegt) in Frage 3. */
   function berichtAngelegt(z) {
-    return z.que_1 === 'y' && z.que_2 === 'y' && z.que_3.ordnerErledigt;
+    return z.que_1 === 'y' && z.que_2 === 'y' && z.que_3.ordnerErledigt && !leer(z.que_3.ordnerName);
   }
 
   /* ---------- Abschlussbericht ---------- */
@@ -303,7 +307,9 @@
     if (z.meta.erstellt) L.push('Angelegt:   ' + formatZeit(new Date(z.meta.erstellt)));
     L.push('Stand:      ' + formatZeit(jetzt));
     L.push('Status:     ' + (e.ende ? 'ABGESCHLOSSEN' : e.abbruch ? 'ABGEBROCHEN – ' + e.abbruch : 'IN BEARBEITUNG (' + frageName(e.aktuell) + ')'));
-    L.push('Ablage:     ' + KONFIG.zielPfad + '\\' + (z.meta.ordnerName || '<Ordnername nicht erfasst>'));
+    L.push('Ablage:     ' + KONFIG.zielPfad + '\\' + (leer(z.que_3.ordnerName) ? '–' : z.que_3.ordnerName.trim()));
+    if (!leer(z.que_3.ticketNummer)) L.push('Ticket:     ' + z.que_3.ticketNummer.trim());
+    if (z.meta.ordnerName && z.meta.ordnerName !== (z.que_3.ordnerName || '').trim()) L.push('Hinweis:    Bericht gespeichert in Ordner „' + z.meta.ordnerName + '“ (weicht vom Ordnernamen ab)');
     L.push('');
 
     const zeile = (nr, titel, text) => L.push(`[Frage ${nr}] ${titel}: ${text}`);
@@ -311,8 +317,8 @@
     if (erreicht.has('que_1') && z.que_1) zeile(1, 'Anfrage berechtigt', jn(z.que_1));
     if (erreicht.has('que_2') && z.que_2) zeile(2, 'Zuständigkeit UKS Campus LKH / CDK', jn(z.que_2));
     if (erreicht.has('que_3')) {
-      if (z.que_3.ordnerErledigt) zeile(3, 'Ordner angelegt', 'Ja');
-      if (z.que_3.ticketErledigt) L.push('    Ticket als Störung angelegt und selbst zugewiesen: Ja');
+      if (z.que_3.ordnerErledigt) zeile(3, 'Ordner angelegt', z.que_3.ordnerName.trim());
+      if (z.que_3.ticketErledigt) L.push('    Ticket als Störung angelegt und selbst zugewiesen: ' + z.que_3.ticketNummer.trim());
     }
     if (erreicht.has('que_4') && z.que_4.umfangBestaetigt) {
       const q = z.que_4;

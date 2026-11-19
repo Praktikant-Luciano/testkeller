@@ -31,7 +31,11 @@ async function durchlauf(page, { mitTrotzdem = false } = {}) {
   await ja(page, 'que_1');
   await ja(page, 'que_2');
   assert.equal(await page.locator('[data-key="zielpfad"]').innerText(), 'G:\\Pflege Direktion\\gemeinsame Daten\\IT Koordination Pflege\\7_Auswertungen ePDOK\\Beschwerden_Schadensfälle\\test cp');
+  assert.equal(await page.locator('[data-key="ordner_erledigt"]').isDisabled(), true, 'Ordnername Pflicht');
+  await page.fill('[data-key="ordnername"]', '2026-001_Test');
   await page.locator('[data-key="ordner_erledigt"]').click();
+  assert.equal(await page.locator('[data-key="ticket_erledigt"]').isDisabled(), true, 'Ticketnummer Pflicht');
+  await page.fill('[data-key="ticketnr"]', 'INC-123');
   await page.locator('[data-key="ticket_erledigt"]').click();
   // Frage 4 – Teilschritt 1
   const weiter1 = page.locator('[data-key="q4_anzahl_weiter"]');
@@ -100,7 +104,8 @@ for (const variante of ['variante-a-wizard', 'variante-b-formular', 'variante-oh
         await page.waitForTimeout(600);
         const datei = await page.evaluate(() => window.__dateien['Abschlussbericht.txt']);
         assert.ok(datei && datei.includes('ABGESCHLOSSEN'), 'Datei im Ordner muss Endstand haben');
-        assert.ok(datei.includes('test cp\\PDok-Testordner'), 'gewählter Ordnername im Bericht');
+        assert.ok(datei.includes('test cp\\2026-001_Test'), 'Ordnername im Bericht');
+        assert.ok(datei.includes('Ticket:     INC-123'), 'Ticketnummer im Bericht');
       } else {
         assert.match(bericht, /\[Frage 7\] .*TROTZDEM FORTGEFAHREN/);
         assert.match(bericht, /\[Frage 9\] .*TROTZDEM FORTGEFAHREN/);
@@ -149,7 +154,9 @@ for (const variante of ['variante-a-wizard', 'variante-b-formular', 'variante-oh
   if (!ok) fehler++;
   // Fokus bleibt beim Tippen erhalten
   await ja(page, 'que_1');
+  await page.fill('[data-key="ordnername"]', 'X');
   await page.locator('[data-key="ordner_erledigt"]').click();
+  await page.fill('[data-key="ticketnr"]', 'T1');
   await page.locator('[data-key="ticket_erledigt"]').click();
   await page.locator('[data-key="anz_f"]').click();
   await page.keyboard.type('1');

@@ -9,7 +9,7 @@ function bis(n) {
   z.meta.erstellt = new Date(2026, 10, 19, 9, 0).toISOString();
   if (n >= 1) z.que_1 = 'y';
   if (n >= 2) z.que_2 = 'y';
-  if (n >= 3) Object.assign(z.que_3, { ordnerErledigt: true, ticketErledigt: true });
+  if (n >= 3) Object.assign(z.que_3, { ordnerName: '2026-001_Test', ordnerErledigt: true, ticketNummer: 'INC-123', ticketErledigt: true });
   if (n >= 4) Object.assign(z.que_4, {
     anzahlZeitraeume: '1', anzahlFaelle: '', anzahlBestaetigt: true,
     zeitraeume: [{ von: '01.01.2026', bis: '31.01.2026' }], faelle: [], umfangBestaetigt: true,
@@ -59,13 +59,17 @@ test('Frage 2 Nein => Abbruch, kein Bericht', () => {
   assert.equal(L.berichtAngelegt(z), false);
 });
 
-test('Frage 3: Bericht ab "Erledigt" Ordner; Ticket "Erledigt" => Frage 4', () => {
+test('Frage 3: Ordnername + Ticketnummer sind Pflicht', () => {
   const z = bis(2);
-  assert.equal(L.berichtAngelegt(z), false);
   z.que_3.ordnerErledigt = true;
+  assert.equal(L.berichtAngelegt(z), false, 'ohne Ordnername kein Bericht');
+  z.que_3.ordnerName = '  ';
+  assert.equal(L.berichtAngelegt(z), false, 'nur Leerzeichen zählt nicht');
+  z.que_3.ordnerName = 'A';
   assert.equal(L.berichtAngelegt(z), true);
-  assert.equal(L.auswerten(z).aktuell, 'que_3');
   z.que_3.ticketErledigt = true;
+  assert.equal(L.auswerten(z).aktuell, 'que_3', 'ohne Ticketnummer nicht weiter');
+  z.que_3.ticketNummer = 'INC-1';
   assert.equal(L.auswerten(z).aktuell, 'que_4');
 });
 
@@ -171,8 +175,10 @@ test('Kategorien Frage 8 laut Vorlage v3_nutzer', () => {
 });
 
 test('Bericht: vollständiger Pfad, "Frage x", Ablagepfad, CRLF', () => {
-  const z = bis(10); z.meta.ordnerName = '2026-001_Test';
+  const z = bis(10);
   const t = L.berichtText(z, new Date(2026, 10, 19, 10, 30));
+  assert.match(t, /Ticket: +INC-123/);
+  assert.match(t, /\[Frage 3\] Ordner angelegt: 2026-001_Test/);
   assert.match(t, /Status: +ABGESCHLOSSEN/);
   assert.match(t, /Ablage: +G:\\Pflege Direktion\\.*\\test cp\\2026-001_Test/);
   assert.match(t, /\[Frage 4\] Umfang: 0 Fall\/Fälle, 1 Zeitraum/);
@@ -182,8 +188,11 @@ test('Bericht: vollständiger Pfad, "Frage x", Ablagepfad, CRLF', () => {
   assert.ok(!/\r?\n/.test(t.replace(/\r\n/g, '')));
 });
 
-test('Bericht: ohne gewählten Ordner wird das kenntlich gemacht', () => {
-  assert.match(L.berichtText(bis(3)), /<Ordnername nicht erfasst>/);
+test('Bericht: abweichender Speicherordner wird vermerkt', () => {
+  const z = bis(3); z.meta.ordnerName = 'anderer';
+  assert.match(L.berichtText(z), /weicht vom Ordnernamen ab/);
+  z.meta.ordnerName = '2026-001_Test';
+  assert.ok(!/weicht/.test(L.berichtText(z)));
 });
 
 test('Bericht: "Trotzdem fortgefahren" wird dokumentiert (auch Frage 9)', () => {
