@@ -21,7 +21,7 @@
     if (e.abbruch) {
       inhalt = abbruchKarte(ctx, e.abbruch, () => {
         // Fehlklick-Schutz: letzte Antwort zurücknehmen statt alles neu
-        if (e.aktuell === 'que_1') ctx.z.que_1 = null; else ctx.z.sub_que_2 = null;
+        ctx.z[e.aktuell] = null;
         ctx.aktualisieren();
       });
     } else if (e.ende) {

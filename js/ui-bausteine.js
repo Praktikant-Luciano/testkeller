@@ -110,9 +110,7 @@
 
   R.que_1 = (ctx) => jaNein(ctx, 'que_1', T.que_1);
 
-  R.que_2 = (ctx) => h('div', null,
-    jaNein(ctx, 'que_2', T.que_2),
-    ctx.z.que_2 === 'n' ? h('div', { class: 'dc-teil' }, jaNein(ctx, 'sub_que_2', T.sub_que_2)) : null);
+  R.que_2 = (ctx) => jaNein(ctx, 'que_2', T.que_2);
 
   R.que_3 = (ctx) => {
     const q = ctx.z.que_3, teile = [];
@@ -253,6 +251,7 @@
         })))))));
     return h('div', null,
       h('p', { class: 'dc-frage' }, T.que_6),
+      spalten.length === 2 ? h('p', null, 'Bei „gemischt“: je Spalte (entlassen und aktuell) mindestens ein System wählen.') : null,
       tabelle,
       q.weiter ? fehlerliste(p.fehler) : null,
       q.weiter ? null : h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { q.weiter = true; ctx.aktualisieren(); }, !p.ok, { 'data-key': 'q6_weiter' })));
@@ -269,7 +268,7 @@
     h('p', { class: 'dc-frage' }, T.que_8),
     h('ul', null, L.KONFIG.kategorien.map((k) => h('li', null, k))),
     mitTrotzdem('que_8', 'Antwort:')(ctx));
-  R.que_9 = mitTrotzdem('que_9', T.que_9);
+  R.que_9 = (ctx) => jaNein(ctx, 'que_9', T.que_9);
   R.que_10 = (ctx) => jaNein(ctx, 'que_10', T.que_10);
 
   /* ---------- Größere Bausteine ---------- */

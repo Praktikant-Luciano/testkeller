@@ -29,7 +29,7 @@ async function nein(page, gruppe) { await page.locator(`[data-key="${gruppe}_n"]
 
 async function durchlauf(page, { mitTrotzdem = false } = {}) {
   await ja(page, 'que_1');
-  await nein(page, 'que_2'); await ja(page, 'sub_que_2');
+  await ja(page, 'que_2');
   const erledigt = page.locator('[data-key="ordner_erledigt"]');
   assert.equal(await erledigt.isDisabled(), true, 'Erledigt muss ohne Pfad gesperrt sein');
   await page.fill('[data-key="pfad"]', 'X:\\PDok\\2026-001');
@@ -57,6 +57,7 @@ async function durchlauf(page, { mitTrotzdem = false } = {}) {
   await page.locator('[data-key="q5_weiter"]').click();
   assert.equal(await page.locator('[data-key="q6_weiter"]').isDisabled(), true);
   await page.locator('[data-key="q6_entlassen_MV5"]').check();
+  assert.equal(await page.locator('[data-key="q6_weiter"]').isDisabled(), true, 'gemischt braucht beide Spalten');
   await page.locator('[data-key="q6_aktuell_NICE"]').check();
   await page.locator('[data-key="q6_weiter"]').click();
   // que_7..9
@@ -65,7 +66,11 @@ async function durchlauf(page, { mitTrotzdem = false } = {}) {
     assert.equal(await page.locator('[data-key="que_7_y"]').getAttribute('aria-pressed'), 'false', 'n/n muss in que_7 bleiben');
     await nein(page, 'que_7'); await ja(page, 'que_7_trotzdem');
   } else await ja(page, 'que_7');
-  await ja(page, 'que_8'); await ja(page, 'que_9');
+  await ja(page, 'que_8');
+  await nein(page, 'que_9');
+  assert.ok(await page.getByText(/Export zuerst ausführen/).isVisible(), 'que_9 n muss blockieren');
+  assert.equal(await page.locator('[data-key="que_10_y"]').count(), 0, 'que_10 darf nach que_9 n nicht erscheinen');
+  await ja(page, 'que_9');
   await nein(page, 'que_10');
   assert.ok(await page.getByText('Ticket schliessen!').isVisible());
   await ja(page, 'que_10');
@@ -121,9 +126,9 @@ for (const variante of ['variante-a-wizard', 'variante-b-formular']) {
   await nein(page, 'que_1');
   const ok1 = await page.getByText('Auf Antwort des Anfragegebers warten').isVisible();
   await page.getByRole('button', { name: 'Antwort korrigieren' }).click();
-  await ja(page, 'que_1'); await nein(page, 'que_2'); await nein(page, 'sub_que_2');
-  const ok2 = await page.getByText(/fehlendes Mandat/).isVisible();
-  console.log(ok1 && ok2 ? 'ok  ' : 'FAIL', 'Abbruchpfade que_1 / sub_que_2');
+  await ja(page, 'que_1'); await nein(page, 'que_2');
+  const ok2 = await page.getByText(/des UKS ist nicht zuständig/).isVisible();
+  console.log(ok1 && ok2 ? 'ok  ' : 'FAIL', 'Abbruchpfade que_1 / que_2');
   if (!(ok1 && ok2)) fehler++;
 }
 

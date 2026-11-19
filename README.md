@@ -2,6 +2,7 @@
 
 Checkliste zur Aushebung der Pflegeprozessdokumentation (PDok) in Vanilla HTML/CSS/JS.
 Erzeugt `Abschlussbericht.txt` aus den Eingaben. Kein Build, keine Abhängigkeiten.
+Grundlage: `docs/Dokucheckliste_pdok_v2_neu.docx`.
 
 ## Starten
 `index.html` im Browser öffnen (Doppelklick genügt) und Variante wählen.
@@ -35,6 +36,6 @@ Alle CSS-Klassen beginnen mit `dc-` → keine Kollision mit bestehendem CSS.
 
 ## Tests
 ```
-npm test                    # Logik (37 Tests)
+npm test                    # Logik (36 Tests)
 npm run test:e2e            # Browser, benötigt Playwright
 ```

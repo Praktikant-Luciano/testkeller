@@ -38,24 +38,16 @@ for (let n = 0; n < 10; n++) {
   });
 }
 
-test('que_1 n => Abbruch mit Text aus Vorlage', () => {
+test('que_1 n => Abbruch mit Text aus Vorlage v2_neu', () => {
   const z = L.leererZustand(); z.que_1 = 'n';
   const e = L.auswerten(z);
-  assert.equal(e.abbruch, 'Auf Antwort des Anfragegebers warten');
+  assert.equal(e.abbruch, 'Auf Antwort des Anfragegebers warten bzw. Rücksprache halten mit DL/MM');
 });
 
-test('que_2 n => Rückfrage, sub y => weiter, sub n => Abbruch', () => {
+test('que_2 n => sofortiger Abbruch (v2_neu, keine Rückfrage mehr)', () => {
   const z = bis(1); z.que_2 = 'n';
-  assert.equal(L.pruefeSchritt('que_2', z).rueckfrage, L.TEXT.sub_que_2);
-  z.sub_que_2 = 'y'; assert.equal(L.auswerten(z).aktuell, 'que_3');
-  z.sub_que_2 = 'n'; assert.match(L.auswerten(z).abbruch, /fehlendes Mandat/);
-});
-
-test('que_2 Antwort ändern setzt sub_que_2 zurück', () => {
-  const z = bis(1); L.antworte(z, 'que_2', 'n'); L.antworte(z, 'sub_que_2', 'n');
-  L.antworte(z, 'que_2', 'y');
-  assert.equal(z.sub_que_2, null);
-  assert.equal(L.auswerten(z).aktuell, 'que_3');
+  assert.equal(L.auswerten(z).abbruch, 'Die Stabstelle Pflegeinformatik des UKS ist nicht zuständig.');
+  assert.equal(L.berichtAngelegt(z), false);
 });
 
 test('que_3: Pfad nur Leerzeichen zählt nicht', () => {
@@ -130,12 +122,12 @@ test('que_6: Auswahl in falscher Spalte zählt nicht', () => {
   assert.equal(L.auswerten(z).aktuell, 'que_6');
 });
 
-test('que_6 gemischt: Vorlage verlangt nur 1 Box gesamt; strenger Modus je Spalte', () => {
+test('que_6 gemischt (tree_3): mind. 1 System JE Spalte nötig', () => {
   const z = bis(5); z.que_5.status = 'gemischt'; z.que_6.entlassen.NICE = true; z.que_6.weiter = true;
-  assert.equal(L.auswerten(z).aktuell, 'que_7');
-  assert.equal(L.auswerten(z, { strengGemischt: true }).aktuell, 'que_6');
+  assert.equal(L.auswerten(z).aktuell, 'que_6');
+  assert.equal(L.auswerten(z, { strengGemischt: false }).aktuell, 'que_7'); // alte Regel abschaltbar
   z.que_6.aktuell.U = true;
-  assert.equal(L.auswerten(z, { strengGemischt: true }).aktuell, 'que_7');
+  assert.equal(L.auswerten(z).aktuell, 'que_7');
 });
 
 test('Fallstatus wechseln bereinigt Auswahl der inaktiven Spalte', () => {
@@ -145,7 +137,7 @@ test('Fallstatus wechseln bereinigt Auswahl der inaktiven Spalte', () => {
   assert.equal(z.que_6.entlassen.MV5, true);
 });
 
-for (const q of ['que_7', 'que_8', 'que_9']) {
+for (const q of ['que_7', 'que_8']) {
   test(`${q}: n -> Rückfrage; trotzdem y -> weiter; trotzdem n -> bleiben (Antwort zurückgesetzt)`, () => {
     const n = +q.split('_')[1];
     const z = bis(n - 1);
@@ -158,6 +150,16 @@ for (const q of ['que_7', 'que_8', 'que_9']) {
     assert.equal(L.auswerten(z).aktuell, `que_${n + 1}`);
   });
 }
+
+test('que_9 n => kein Trotzdem, Hinweis, bleibt in que_9', () => {
+  const z = bis(8);
+  const r = L.antworte(z, 'que_9', 'n');
+  assert.match(r.hinweis, /Export zuerst ausführen/);
+  assert.equal(L.pruefeSchritt('que_9', z).rueckfrage, undefined);
+  assert.equal(L.auswerten(z).aktuell, 'que_9');
+  z.que_9_trotzdem = 'y'; // darf keine Wirkung haben
+  assert.equal(L.auswerten(z).aktuell, 'que_9');
+});
 
 test('que_10 n => Hinweis "Ticket schliessen!" und bleibt offen', () => {
   const z = bis(9);
@@ -189,8 +191,8 @@ test('Bericht: vollständiger Pfad enthält alle Abschnitte, CRLF', () => {
 });
 
 test('Bericht: "Trotzdem fortgefahren" wird dokumentiert', () => {
-  const z = bis(8); z.que_9 = 'n'; z.que_9_trotzdem = 'y';
-  assert.match(L.berichtText(z), /\[9\] Export .*Nein – TROTZDEM FORTGEFAHREN/);
+  const z = bis(7); z.que_8 = 'n'; z.que_8_trotzdem = 'y';
+  assert.match(L.berichtText(z), /\[8\] .*Nein – TROTZDEM FORTGEFAHREN/);
 });
 
 test('Bericht: Auswahl aus inaktiver Spalte erscheint nicht', () => {

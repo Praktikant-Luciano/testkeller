@@ -25,11 +25,10 @@
 
   /* ---------- Texte (wörtlich aus der Vorlage) ---------- */
   const TEXT = {
-    que_1: 'Anfrage legitim oder sind Rückfragen beim Anfragegeber notwendig? (y/n)',
-    que_1_abbruch: 'Auf Antwort des Anfragegebers warten',
+    que_1: 'Anfrage legitim? (y/n)',
+    que_1_abbruch: 'Auf Antwort des Anfragegebers warten bzw. Rücksprache halten mit DL/MM',
     que_2: 'Betrifft die Anfrage ganz oder teilweise das UKS Campus LKH und/oder Campus CDK? (y/n)',
-    sub_que_2: 'Die Stabstelle Pflegeinformatik ist nicht oder nur teilweise zuständig. Trotzdem fortfahren? (y/n)',
-    que_2_abbruch: 'Anfragegeber nach Rücksprache mit DL/MM über fehlendes Mandat informieren.',
+    que_2_abbruch: 'Die Stabstelle Pflegeinformatik des UKS ist nicht zuständig.',
     que_3_ordner: 'Ordner anlegen unter (explorer link tba) und eindeutig benennen und Pfad zum Ordner hier eingeben:',
     que_3_ticket: 'Ticket anlegen mit kurzer Darstellung des Sachverhalts. Anschließend Ticket an Bearbeitenden zuweisen.',
     sub_que_3: 'Link zum Ticket hier dokumentieren? (y/n)',
@@ -44,6 +43,7 @@
     que_7: 'Wurden alle relevanten Dokumente entsprechend Fallstatus-Dokumentationssystem identifiziert? (y/n)',
     que_8: 'Sind alle Dokumente einer der folgenden Kategorien zugeordnet? (y/n)',
     que_9: 'Export über Livelink opentext an den Anfragegeber ausgeführt? (y/n)',
+    que_9_nein: 'Export zuerst ausführen. Ohne Export kann das Ticket nicht geschlossen werden.',
     que_10: 'Wurde das Ticket geschlossen? (y/n)',
     que_10_nein: 'Ticket schliessen!',
     trotzdem: 'Trotzdem fortfahren? (y/n)',
@@ -69,7 +69,7 @@
     const systemeLeer = () => Object.fromEntries(KONFIG.systeme.map((s) => [s, false]));
     return {
       que_1: null,                 // 'y' | 'n'
-      que_2: null, sub_que_2: null,
+      que_2: null,
       que_3: {
         ordnerPfad: '', ordnerErledigt: false,
         ticketErledigt: false,
@@ -89,7 +89,7 @@
       que_6: { entlassen: systemeLeer(), aktuell: systemeLeer(), weiter: false },
       que_7: null, que_7_trotzdem: null,
       que_8: null, que_8_trotzdem: null,
-      que_9: null, que_9_trotzdem: null,
+      que_9: null,
       que_10: null,
       meta: { erstellt: null },
     };
@@ -169,13 +169,14 @@
 
   /**
    * Prüft que_6. Vorlage: "ausgegraut bis … eine Check-Box ausgewählt wurde".
-   * Option strengGemischt: bei tree_3 mind. eine Box JE Spalte (Empfehlung, siehe docs/ANALYSE.md).
+   * Entscheidung 19.11.2026: bei "gemischt" (tree_3) mind. eine Box JE Spalte (entlassen UND aktuell).
+   * Mit optionen.strengGemischt === false gilt wieder die alte Regel (1 Box gesamt).
    */
   function pruefeSysteme(q6, status, optionen = {}) {
     const spalten = aktiveSpalten(status);
     if (!spalten.length) return { ok: false, fehler: ['Zuerst Fallstatus wählen'] };
     const anzahl = spalten.map((sp) => gewaehlteSysteme(q6, sp).length);
-    if (optionen.strengGemischt && spalten.length === 2) {
+    if (optionen.strengGemischt !== false && spalten.length === 2) {
       const fehler = [];
       spalten.forEach((sp, i) => { if (!anzahl[i]) fehler.push(`Spalte „${sp}“: mindestens ein System wählen`); });
       return { ok: !fehler.length, fehler };
@@ -213,11 +214,7 @@
         return { status: 'offen' };
       case 'que_2':
         if (z.que_2 === 'y') return { status: 'erledigt' };
-        if (z.que_2 === 'n') {
-          if (z.sub_que_2 === 'y') return { status: 'erledigt', meldung: 'Nicht/teilweise zuständig – trotzdem fortgefahren' };
-          if (z.sub_que_2 === 'n') return { status: 'abbruch', meldung: TEXT.que_2_abbruch };
-          return { status: 'offen', rueckfrage: TEXT.sub_que_2 };
-        }
+        if (z.que_2 === 'n') return { status: 'abbruch', meldung: TEXT.que_2_abbruch };
         return { status: 'offen' };
       case 'que_3': {
         const q = z.que_3, fehler = [];
@@ -245,7 +242,11 @@
       }
       case 'que_7': return janeinMitTrotzdem(z.que_7, z.que_7_trotzdem);
       case 'que_8': return janeinMitTrotzdem(z.que_8, z.que_8_trotzdem);
-      case 'que_9': return janeinMitTrotzdem(z.que_9, z.que_9_trotzdem);
+      // Entscheidung 19.11.2026: kein "Trotzdem fortfahren" bei que_9 – ohne Export kein Ticketschluss.
+      case 'que_9':
+        if (z.que_9 === 'y') return { status: 'erledigt' };
+        if (z.que_9 === 'n') return { status: 'offen', meldung: TEXT.que_9_nein };
+        return { status: 'offen' };
       case 'que_10':
         if (z.que_10 === 'y') return { status: 'ende' };
         if (z.que_10 === 'n') return { status: 'offen', meldung: TEXT.que_10_nein };
@@ -273,7 +274,7 @@
 
   /** Ob Abschlussbericht.txt schon existieren darf (Vorlage: Anlage bei que_3 "Erledigt" für Ordner). */
   function berichtAngelegt(z) {
-    return z.que_1 === 'y' && (z.que_2 === 'y' || z.sub_que_2 === 'y') && z.que_3.ordnerErledigt && !leer(z.que_3.ordnerPfad);
+    return z.que_1 === 'y' && z.que_2 === 'y' && z.que_3.ordnerErledigt && !leer(z.que_3.ordnerPfad);
   }
 
   /* ---------- Abschlussbericht ---------- */
@@ -303,11 +304,7 @@
     const zeile = (nr, titel, text) => L.push(`[${nr}] ${titel}: ${text}`);
 
     if (erreicht.has('que_1') && z.que_1) zeile(1, 'Anfrage legitim', jn(z.que_1));
-    if (erreicht.has('que_2') && z.que_2) {
-      let t = jn(z.que_2);
-      if (z.que_2 === 'n' && z.sub_que_2) t += z.sub_que_2 === 'y' ? ' – nicht/teilweise zuständig, trotzdem fortgefahren' : ' – abgebrochen';
-      zeile(2, 'Zuständigkeit UKS Campus LKH / CDK', t);
-    }
+    if (erreicht.has('que_2') && z.que_2) zeile(2, 'Zuständigkeit UKS Campus LKH / CDK', jn(z.que_2));
     if (erreicht.has('que_3')) {
       const q = z.que_3;
       if (q.ordnerErledigt) zeile(3, 'Ordner angelegt', 'Ja');
@@ -333,13 +330,13 @@
       });
     }
     [['que_7', 7, 'Relevante Dokumente identifiziert'],
-     ['que_8', 8, 'Dokumente Kategorien zugeordnet'],
-     ['que_9', 9, 'Export über Livelink opentext ausgeführt']].forEach(([id, nr, titel]) => {
+     ['que_8', 8, 'Dokumente Kategorien zugeordnet']].forEach(([id, nr, titel]) => {
       if (!erreicht.has(id) || !z[id]) return;
       let t = jn(z[id]);
       if (z[id] === 'n' && z[id + '_trotzdem'] === 'y') t += ' – TROTZDEM FORTGEFAHREN';
       if (erledigt(id) || z[id] === 'y') zeile(nr, titel, t);
     });
+    if (erreicht.has('que_9') && z.que_9 === 'y') zeile(9, 'Export über Livelink opentext ausgeführt', 'Ja');
     if (erreicht.has('que_10') && z.que_10 === 'y') zeile(10, 'Ticket geschlossen', 'Ja');
     return L.join('\r\n') + '\r\n';
   }
@@ -353,11 +350,11 @@
   function antworte(z, feld, wert) {
     z[feld] = wert;
     // Rücksetzen abhängiger Felder bei Änderung der Hauptantwort
-    if (feld === 'que_2') z.sub_que_2 = null;
-    if (/^que_[789]$/.test(feld)) z[feld + '_trotzdem'] = null;
+    if (/^que_[78]$/.test(feld)) z[feld + '_trotzdem'] = null;
+    if (feld === 'que_9' && wert === 'n') return { hinweis: TEXT.que_9_nein };
     if (feld === 'que_10' && wert === 'n') return { hinweis: TEXT.que_10_nein };
     // "Trotzdem fortfahren? n" => in que_x bleiben: Frage erneut stellen
-    const m = /^(que_[789])_trotzdem$/.exec(feld);
+    const m = /^(que_[78])_trotzdem$/.exec(feld);
     if (m && wert === 'n') { z[m[1]] = null; z[feld] = null; return { hinweis: 'Bitte Schritt abschließen, dann erneut beantworten.' }; }
     return {};
   }
