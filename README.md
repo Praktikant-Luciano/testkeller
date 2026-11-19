@@ -42,3 +42,7 @@ Alle CSS-Klassen beginnen mit `dc-` → keine Kollision mit bestehendem CSS.
 npm test                    # Logik (37 Tests)
 npm run test:e2e            # Browser, benötigt Playwright
 ```
+
+## Entscheidungsbaum
+`docs/entscheidungsbaum/` – SVG, PNG, PDF und `.drawio` (bearbeitbar in draw.io; dort *Datei → Exportieren als → VSDX* für Visio).
+Neu erzeugen: `python3 tools/entscheidungsbaum.py`.
