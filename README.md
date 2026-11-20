@@ -7,6 +7,8 @@ Grundlage: `docs/Dokucheckliste_pdok_v3_nutzer.docx`.
 ## Starten
 **Aktuelle Auslieferung:** `einzeldatei/Dokucheckliste_PDok.html` (Schritt für Schritt, Farben ohne CD-Blau, Quelle: `variante-ohne-blau/` + `css/thema-ohne-blau.css`).
 
+**Variante 2 (mit Live-Vorschau):** `einzeldatei/Dokucheckliste_PDok_Variante2.html` – wie oben Schritt für Schritt, rechts (Handy: darunter) eine Live-Vorschau von `Abschlussbericht.txt` (Quelle: `variante-ohne-blau-vorschau/` + `js/wizard-vorschau.js` + `css/vorschau.css`).
+
 **Am einfachsten:** `einzeldatei/Dokucheckliste_Variante_A.html` bzw. `…_B.html` öffnen – je eine Datei, alles eingebettet, funktioniert auch ohne Entpacken.
 Nach Änderungen an `js/` oder `css/` neu erzeugen: `npm run build`.
 

@@ -83,7 +83,7 @@ async function durchlauf(page, { mitTrotzdem = false } = {}) {
 
 const browser = await chromium.launch();
 let fehler = 0;
-for (const variante of ['variante-a-wizard', 'variante-b-formular', 'variante-ohne-blau', 'einzeldatei/Dokucheckliste_PDok.html', 'einzeldatei/Dokucheckliste_Variante_A.html', 'einzeldatei/Dokucheckliste_Variante_B.html']) {
+for (const variante of ['variante-a-wizard', 'variante-b-formular', 'variante-ohne-blau', 'einzeldatei/Dokucheckliste_PDok.html', 'variante-ohne-blau-vorschau', 'einzeldatei/Dokucheckliste_PDok_Variante2.html', 'einzeldatei/Dokucheckliste_Variante_A.html', 'einzeldatei/Dokucheckliste_Variante_B.html']) {
   for (const modus of ['fs', 'download']) {
     const name = `${variante} / ${modus}`;
     const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 } });
