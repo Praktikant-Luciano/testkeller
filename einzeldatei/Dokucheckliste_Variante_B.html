@@ -794,7 +794,7 @@ a { color: var(--dc-primaer); }
         textfeld(ctx, `f${i}`, f, (v) => { q.faelle[i] = v; }, { id: `f${i}`, placeholder: 'Fallnummer' }))));
     }
     const beruehrt = q.zeitraeume.some((z) => z.von || z.bis) || q.faelle.some((f) => f);
-    if (beruehrt || q.umfangBestaetigt) teil2.append(fehlerliste(umfang.fehler));
+    if ((beruehrt || q.umfangBestaetigt) && umfang.fehler.length) teil2.append(fehlerliste(umfang.fehler));
     if (!q.umfangBestaetigt) {
       teil2.append(h('div', { class: 'dc-aktionen' }, knopf('Fertig und weiter', () => { q.umfangBestaetigt = true; ctx.aktualisieren(); }, !umfang.ok, { 'data-key': 'q4_fertig' })));
       return h('div', null, teil1, teil2);

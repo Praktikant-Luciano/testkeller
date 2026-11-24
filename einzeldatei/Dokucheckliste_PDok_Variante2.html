@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dokucheckliste PDok – Variante 2</title>
+  <style>
+/* css/style_CD.css */
+:root {
+  --salk-gruen: #94BF05;
+  --uk-blau: #00509E;
+  --textgrau: #6E6F70;
+  --hellgrau: #B0B2B4;
+  --hintergrund-beige: #F6F4EA;
+  --pmu-blau: #262E61;
+}
+
+body { font-family: Arial, sans-serif; color: var(--textgrau); }
+.headline { font-weight: 400; }
+.fliesstext { font-weight: 400; font-style: normal; }
+.texthervorhebung { font-style: italic; }
+.zwischenheadline { font-weight: 700; }
+
+.salk-hauptfarbe { color: var(--salk-gruen); }
+.uk-logo-farbe { color: var(--uk-blau); }
+.pmu-farbe { color: var(--pmu-blau); }
+.hintergrund-beige { background-color: var(--hintergrund-beige); }
+.hintergrund-hellgrau { background-color: var(--hellgrau); }
+</style>
+  <style>
+/* css/checkliste.css */
+/*
+ * Komponenten für die Dokucheckliste.
+ * Nutzt ausschließlich die CI-Variablen aus style_CD.css (zuerst einbinden!).
+ * Kontrast (WCAG 2.1, geprüft): Textgrau auf Weiß 5.0:1, auf Beige 4.6:1, Weiß auf UK-Blau 7.9:1,
+ * PMU-Blau auf SALK-Grün 5.9:1. SALK-Grün NICHT als Textfarbe auf Weiß (2.2:1) -> nur Flächen/Rahmen.
+ */
+/* Semantische Farben (Standard = CD mit Blau). Andere Themen überschreiben nur diese Variablen. */
+:root {
+  --dc-primaer: var(--uk-blau);   /* Buttons, aktive Elemente */
+  --dc-dunkel: var(--pmu-blau);   /* Überschriften, Fragen */
+  --dc-fokus: var(--salk-gruen);  /* Fokusrahmen */
+  --dc-warn-bg: var(--salk-gruen);
+  --dc-warn-text: var(--pmu-blau);
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--hintergrund-beige); line-height: 1.5; font-size: 16px; }
+
+.dc-kopf { background: #fff; border-bottom: 4px solid var(--salk-gruen); padding: 16px; }
+.dc-kopf h1 { margin: 0; font-size: 1.5rem; font-weight: 400; color: var(--dc-dunkel); }
+.dc-kopf p { margin: 4px 0 0; }
+
+.dc-haupt { max-width: 760px; margin: 0 auto; padding: 16px; }
+.dc-haupt--breit { max-width: 1200px; }
+
+.dc-karte { background: #fff; border-radius: 6px; padding: 20px; margin-bottom: 16px; border-left: 6px solid var(--hellgrau); }
+.dc-karte--aktiv { border-left-color: var(--dc-primaer); }
+.dc-karte--erledigt { border-left-color: var(--salk-gruen); }
+.dc-karte--abbruch { border-left-color: var(--dc-dunkel); }
+.dc-karte h2 { margin: 0 0 4px; font-size: 1.25rem; font-weight: 400; color: var(--dc-dunkel); }
+.dc-karte h3 { margin: 16px 0 8px; font-size: 1rem; font-weight: 700; color: var(--dc-dunkel); }
+.dc-schrittnr { font-size: .85rem; font-weight: 700; color: var(--dc-primaer); text-transform: uppercase; letter-spacing: .04em; }
+.dc-frage { margin: 8px 0 12px; color: var(--dc-dunkel); font-weight: 700; }
+.dc-teil { border-top: 1px solid var(--hellgrau); margin-top: 16px; padding-top: 12px; }
+
+/* Buttons */
+.dc-btn { font: inherit; border: 2px solid var(--dc-primaer); background: var(--dc-primaer); color: #fff;
+  padding: 10px 18px; border-radius: 4px; cursor: pointer; min-height: 44px; }
+.dc-btn:hover:not(:disabled) { background: var(--dc-dunkel); border-color: var(--dc-dunkel); }
+.dc-btn:disabled { background: var(--hellgrau); border-color: var(--hellgrau); color: var(--textgrau); cursor: not-allowed; }
+.dc-btn--sekundaer { background: #fff; color: var(--dc-primaer); }
+.dc-btn--sekundaer:hover:not(:disabled) { color: #fff; }
+.dc-btn--klein { min-height: 36px; padding: 4px 12px; }
+.dc-btn:focus-visible, .dc-input:focus-visible, .dc-wahl input:focus-visible + span { outline: 3px solid var(--dc-fokus); outline-offset: 2px; }
+.dc-aktionen { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+/* Ja/Nein */
+.dc-jn { display: inline-flex; gap: 8px; }
+.dc-jn .dc-btn { min-width: 96px; background: #fff; color: var(--dc-primaer); }
+.dc-jn .dc-btn[aria-pressed="true"] { background: var(--dc-primaer); color: #fff; }
+
+/* Eingaben */
+.dc-input { font: inherit; color: var(--dc-dunkel); border: 2px solid var(--hellgrau); border-radius: 4px; padding: 8px 10px; min-height: 44px; width: 100%; }
+.dc-input[readonly] { background: var(--hintergrund-beige); }
+.dc-input--datum { width: 9.5em; }
+.dc-input--zahl { width: 4.5em; text-align: center; }
+.dc-pfad { flex: 1 1 18em; font-family: Consolas, "Courier New", monospace; font-size: .9rem; background: var(--hintergrund-beige); border: 2px solid var(--hellgrau); border-radius: 4px; padding: 8px 10px; word-break: break-all; user-select: all; color: var(--dc-dunkel); }
+.dc-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.dc-zeile label { min-width: 6.5em; font-weight: 700; }
+.dc-zeile .dc-input:not(.dc-input--datum) { flex: 1 1 12em; width: auto; }
+.dc-wahl { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; cursor: pointer; }
+.dc-wahl input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--dc-primaer); }
+
+/* Tabelle que_6 */
+.dc-tabelle { border-collapse: collapse; width: 100%; max-width: 420px; }
+.dc-tabelle th, .dc-tabelle td { border-bottom: 1px solid var(--hellgrau); padding: 8px; text-align: left; }
+.dc-tabelle th { color: var(--dc-dunkel); }
+.dc-tabelle td input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--dc-primaer); }
+
+/* Meldungen */
+.dc-meldung { padding: 10px 12px; border-radius: 4px; margin: 10px 0; }
+.dc-meldung--info { background: var(--hintergrund-beige); border-left: 4px solid var(--dc-primaer); }
+.dc-meldung--ok { background: var(--hintergrund-beige); border-left: 4px solid var(--salk-gruen); }
+.dc-meldung--warnung { background: var(--dc-warn-bg); color: var(--dc-warn-text); font-weight: 700; }
+.dc-fehler { margin: 6px 0 0; padding-left: 20px; font-size: .9rem; }
+
+/* Fortschritt */
+.dc-fortschritt { display: flex; gap: 4px; margin: 0 0 16px; padding: 0; list-style: none; }
+.dc-fortschritt li { flex: 1; height: 8px; border-radius: 4px; background: var(--hellgrau); }
+.dc-fortschritt li.erledigt { background: var(--salk-gruen); }
+.dc-fortschritt li.aktiv { background: var(--dc-primaer); }
+.dc-fortschritt-text { margin: -8px 0 12px; font-size: .9rem; }
+
+/* Statusleiste Speichern */
+.dc-speicherstatus { font-size: .9rem; background: #fff; border-radius: 6px; padding: 10px 12px; margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: space-between; }
+
+/* Bericht */
+.dc-bericht { background: var(--hintergrund-beige); border: 1px solid var(--hellgrau); padding: 12px; white-space: pre-wrap; word-break: break-word;
+  font-family: Consolas, "Courier New", monospace; font-size: .85rem; color: var(--dc-dunkel); margin: 0; }
+
+/* Variante B: Layout mit Seitenleiste */
+.dc-raster { display: grid; grid-template-columns: 220px minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+.dc-seite { position: sticky; top: 16px; }
+.dc-nav { list-style: none; margin: 0; padding: 0; background: #fff; border-radius: 6px; }
+.dc-nav li { padding: 8px 12px; border-bottom: 1px solid var(--hintergrund-beige); font-size: .9rem; }
+.dc-nav li.erledigt::before { content: "✓ "; color: var(--dc-dunkel); font-weight: 700; }
+.dc-nav li.aktiv { font-weight: 700; color: var(--dc-dunkel); border-left: 4px solid var(--dc-primaer); }
+.dc-nav li.gesperrt { color: var(--hellgrau); }
+.dc-nav a { color: inherit; text-decoration: none; }
+@media (max-width: 1000px) {
+  .dc-raster { grid-template-columns: 1fr; }
+  .dc-seite { position: static; }
+}
+
+a { color: var(--dc-primaer); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+  <style>
+/* css/thema-ohne-blau.css */
+/*
+ * Thema "ohne CD-Blau": nur SALK-Grün, Textgrau, Hellgrau, Beige (aus style_CD.css).
+ * Nach checkliste.css einbinden.
+ * Kontrast (WCAG 2.1, geprüft): Weiß auf Textgrau 5.0:1, Textgrau auf Weiß 5.0:1, auf Beige 4.6:1.
+ * SALK-Grün nur für Flächen/Rahmen/Akzente (als Text zu kontrastarm: 2.2:1).
+ */
+:root {
+  --dc-primaer: var(--textgrau);
+  --dc-dunkel: var(--textgrau);
+  --dc-fokus: var(--textgrau);
+  --dc-warn-bg: var(--hintergrund-beige);
+  --dc-warn-text: var(--textgrau);
+}
+/* Hover ohne dunkleres Blau: grüner Rahmen als Signal */
+.dc-btn:hover:not(:disabled) { background: var(--textgrau); border-color: var(--salk-gruen); color: #fff; box-shadow: inset 0 -4px 0 var(--salk-gruen); }
+.dc-btn--sekundaer:hover:not(:disabled) { background: #fff; color: var(--textgrau); }
+.dc-meldung--warnung { border-left: 6px solid var(--salk-gruen); }
+.dc-jn .dc-btn[aria-pressed="true"] { box-shadow: inset 0 -4px 0 var(--salk-gruen); }
+.dc-karte--aktiv { border-left-color: var(--salk-gruen); }
+.dc-karte--erledigt { border-left-color: var(--hellgrau); }
+.dc-fortschritt li.aktiv { background: var(--textgrau); }
+.dc-schrittnr { color: var(--textgrau); }
+.dc-kopf h1, .dc-karte h2 { color: var(--textgrau); }
+</style>
+  <style>
+/* css/vorschau.css */
+/* 
+ * Variante 2: Schritt für Schritt + Live-Vorschau des Berichts.
+ * Nach checkliste.css (und ggf. thema-ohne-blau.css) einbinden.
+ */
+.dc-raster-vorschau { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 16px; align-items: start; }
+.dc-vorschau { background: #fff; border-radius: 6px; border-left: 6px solid var(--salk-gruen); padding: 12px 16px; }
+.dc-vorschau summary { cursor: pointer; font-weight: 700; color: var(--dc-dunkel); min-height: 32px; padding: 4px 0; }
+.dc-vorschau summary:focus-visible { outline: 3px solid var(--dc-fokus); outline-offset: 2px; }
+.dc-vorschau .dc-bericht { margin-top: 8px; max-height: calc(100vh - 120px); overflow: auto; font-size: .78rem; }
+.dc-vorschau-leer { margin: 8px 0 0; font-size: .9rem; }
+@media (max-width: 1000px) {
+  .dc-raster-vorschau { grid-template-columns: 1fr; }
+  .dc-vorschau .dc-bericht { max-height: 50vh; }
+}
+
+/* Kein dunkles Feld unter dem Mauszeiger: helle Buttons bleiben beim Überfahren hell, grüner Rahmen als Signal */
+.dc-jn .dc-btn:hover:not(:disabled):not([aria-pressed="true"]),
+.dc-btn--sekundaer:hover:not(:disabled) {
+  background: #fff; color: var(--textgrau); border-color: var(--salk-gruen); box-shadow: inset 0 -4px 0 var(--salk-gruen);
+}
+</style>
+</head>
+<body>
+  <header class="dc-kopf">
+    <h1 class="headline">Dokucheckliste Pflegeprozessdokumentation (PDok)</h1>
+    <p class="fliesstext">Schritt für Schritt · mit Live-Vorschau des Abschlussberichts</p>
+  </header>
+  <main class="dc-haupt dc-haupt--breit">
+    <noscript><p class="dc-meldung dc-meldung--warnung">Bitte JavaScript aktivieren.</p></noscript>
+    <div id="app"></div>
+  </main>
+  <script>
+/* js/logik.js */
+/*
+ * Dokucheckliste PDok – Entscheidungslogik (ohne DOM)
+ * Grundlage: docs/Dokucheckliste_pdok_v3_nutzer.docx
+ * ---------------------------------------------------
+ * Reine Funktionen, damit dieselbe Logik in allen Varianten und in automatisierten Tests (Node) läuft.
+ *
+ * Einbindung im Browser:  <script src="../js/logik.js"><\/script>  -> window.DokuLogik
+ * Einbindung in Node:      const DokuLogik = require('./js/logik.js')
+ */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.DokuLogik = factory();
+})(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  /* ---------- Konfiguration ---------- */
+  const KONFIG = {
+    zielPfad: 'G:\\Pflege Direktion\\gemeinsame Daten\\IT Koordination Pflege\\7_Auswertungen ePDOK\\Beschwerden_Schadensfälle\\test cp',
+    ticketSystemLink: 'https://processes-web.lksdom21.lks.local/servicewareportal/home',
+    dateiname: 'Abschlussbericht.txt',
+    maxZeilen: 5,
+    systeme: ['MV5', 'MV6', 'NICE', 'U', 'Papier'],
+    // Laut Vorlage v3_nutzer: nur "Pflegeanamnese" fest, Rest noch offen
+    kategorien: ['Pflegeanamnese', '… tba', '… tba', '… tba', '… tba', '… tba', '… tba'],
+  };
+
+  /* ---------- Texte (wörtlich aus der Vorlage; "(y/n)" -> "(Ja/Nein)" laut Vorgabe) ---------- */
+  const TEXT = {
+    que_1: 'Anfrage berechtigt? (Ja/Nein)',
+    que_1_abbruch: 'Auf Antwort des Anfragegebers warten bzw. Rücksprache halten mit DL/MM',
+    que_2: 'Betrifft die Anfrage ganz oder teilweise das UKS Campus LKH und/oder Campus CDK? (Ja/Nein)',
+    que_2_abbruch: 'Die Stabstelle Pflegeinformatik des UKS ist nicht zuständig.',
+    que_3_ordner: 'Ordner für die Aushebung eindeutig benennen und unter folgendem Pfad anlegen:',
+    que_3_ticket: 'Ticket als Störung anlegen mit kurzer Darstellung des Sachverhalts. Anschließend Ticket sich selbst zuweisen unter',
+    que_4_anzahl: 'Um wie viele auszuhebende Fälle bzw. Zeiträume handelt es sich?',
+    que_4_wie: 'Wie soll ausgehoben werden?',
+    que_4_was: 'Was darf ausgehoben werden?',
+    que_4_komplett: 'Komplette PDok des Umfangs',
+    que_4_teile: 'Teile des Umfangs',
+    que_5: 'Welcher Fallstatus liegt vor?',
+    que_6: 'Welche Dokumentationssysteme sind betroffen?', // ANNAHME: Vorlage hat keinen Fragetext
+    que_7: 'Wurden alle relevanten Dokumente entsprechend Fallstatus-Dokumentationssystem inkl. Handsuche in Hydmedia identifiziert? (Ja/Nein)',
+    que_8: 'Sind alle Dokumente einer der folgenden Kategorien zugeordnet? (Ja/Nein)',
+    que_9: 'Export über Livelink opentext an den Anfragegeber ausgeführt? (Ja/Nein)',
+    que_10: 'Wurde das Ticket geschlossen? (Ja/Nein)',
+    que_10_nein: 'Ticket schliessen!',
+    trotzdem: 'Trotzdem fortfahren? (Ja/Nein)',
+  };
+
+  const SCHRITTE = [
+    { id: 'que_1', titel: 'Anfrage zur Aushebung der PDok' },
+    { id: 'que_2', titel: 'Zuständigkeit bestätigt' },
+    { id: 'que_3', titel: 'Dokumentation Beginn' },
+    { id: 'que_4', titel: 'Umfang' },
+    { id: 'que_5', titel: 'Fallstatus und Behandlungspfad' },
+    { id: 'que_6', titel: 'Dokumentationssysteme' },
+    { id: 'que_7', titel: 'Pflegeprozessdokumentation' },
+    { id: 'que_8', titel: 'Strukturierung und Kontrollliste' },
+    { id: 'que_9', titel: 'Export' },
+    { id: 'que_10', titel: 'Dokumentation Ende' },
+  ];
+
+  /** Anzeige-Name laut Vorgabe: que_x -> "Frage x" */
+  const frageName = (id) => 'Frage ' + String(id).split('_')[1];
+
+  const FALLSTATUS = { entlassen: 'entlassen', aktuell: 'aktuell', gemischt: 'gemischt' };
+
+  /* ---------- Zustand ---------- */
+  function leererZustand() {
+    const systemeLeer = () => Object.fromEntries(KONFIG.systeme.map((s) => [s, false]));
+    return {
+      que_1: null,                 // 'y' | 'n'
+      que_2: null,
+      que_3: { ordnerName: '', ordnerErledigt: false, ticketNummer: '', ticketErledigt: false },
+      que_4: {
+        anzahlFaelle: '', anzahlZeitraeume: '', // Teilschritt 1 (leer = 0)
+        anzahlBestaetigt: false,
+        zeitraeume: [], faelle: [],             // Teilschritt 2
+        umfangBestaetigt: false,
+        art: null, teileText: '',               // Teilschritt 3
+        weiter: false,
+      },
+      que_5: { status: null, weiter: false },
+      que_6: { entlassen: systemeLeer(), aktuell: systemeLeer(), weiter: false },
+      que_7: null, que_7_trotzdem: null,
+      que_8: null, que_8_trotzdem: null,
+      que_9: null, que_9_trotzdem: null,
+      que_10: null,
+      meta: { erstellt: null, ordnerName: null },
+    };
+  }
+
+  /* ---------- Hilfsfunktionen / Validierung ---------- */
+  const leer = (s) => typeof s !== 'string' || s.trim() === '';
+
+  /** 'dd.mm.yyyy' -> Date (lokal, 00:00) oder null, prüft echte Kalenderdaten. */
+  function parseDatum(text) {
+    if (typeof text !== 'string') return null;
+    const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(text.trim());
+    if (!m) return null;
+    const t = +m[1], mo = +m[2], j = +m[3];
+    const d = new Date(j, mo - 1, t);
+    if (d.getFullYear() !== j || d.getMonth() !== mo - 1 || d.getDate() !== t) return null;
+    return d;
+  }
+
+  /** Teilschritt 1: Anzahl 0–5. Leere Eingabe = 0. Gibt Zahl oder null (ungültig) zurück. */
+  function parseAnzahl(text) {
+    if (text == null || String(text).trim() === '') return 0;
+    const s = String(text).trim();
+    if (!/^\d+$/.test(s)) return null;
+    const n = +s;
+    return n >= 0 && n <= KONFIG.maxZeilen ? n : null;
+  }
+
+  function pruefeAnzahl(q4) {
+    const f = parseAnzahl(q4.anzahlFaelle), z = parseAnzahl(q4.anzahlZeitraeume), fehler = [];
+    if (f === null) fehler.push(`Fälle: Zahl von 0 bis ${KONFIG.maxZeilen} eingeben`);
+    if (z === null) fehler.push(`Zeiträume: Zahl von 0 bis ${KONFIG.maxZeilen} eingeben`);
+    if (!fehler.length && f + z === 0) fehler.push('Mindestens 1 Fall oder 1 Zeitraum angeben');
+    return { ok: !fehler.length, fehler, faelle: f || 0, zeitraeume: z || 0 };
+  }
+
+  /** Passt die Zeilen von Teilschritt 2 an die Anzahl aus Teilschritt 1 an (vorhandene Werte bleiben). */
+  function zeilenAnpassen(q4) {
+    const a = pruefeAnzahl(q4);
+    if (!a.ok) return q4;
+    q4.faelle = Array.from({ length: a.faelle }, (_, i) => q4.faelle[i] || '');
+    q4.zeitraeume = Array.from({ length: a.zeitraeume }, (_, i) => q4.zeitraeume[i] || { von: '', bis: '' });
+    return q4;
+  }
+
+  /** Prüft eine Zeitraumzeile: Fehlertext oder 'ok'. */
+  function pruefeZeitraum(z) {
+    if (leer(z.von) || leer(z.bis)) return 'Von und Bis ausfüllen';
+    const von = parseDatum(z.von), bis = parseDatum(z.bis);
+    if (!von || !bis) return 'Datum im Format TT.MM.JJJJ eingeben';
+    if (von > bis) return '„Von“ liegt nach „Bis“';
+    return 'ok';
+  }
+
+  /** Teilschritt 2: Alle angekündigten Zeilen müssen gültig ausgefüllt sein. */
+  function pruefeUmfang(q4) {
+    const fehler = [];
+    const a = pruefeAnzahl(q4);
+    if (!a.ok) return { ok: false, fehler: a.fehler };
+    if (q4.zeitraeume.length !== a.zeitraeume || q4.faelle.length !== a.faelle) fehler.push('Anzahl geändert – bitte Teilschritt 1 erneut bestätigen');
+    q4.zeitraeume.forEach((z, i) => {
+      const r = pruefeZeitraum(z);
+      if (r !== 'ok') fehler.push(`Zeitraum #${i + 1}: ${r}`);
+    });
+    const gesehen = new Set();
+    q4.faelle.forEach((f, i) => {
+      if (leer(f)) { fehler.push(`Fall #${i + 1}: Fallnummer eingeben`); return; }
+      const n = f.trim();
+      if (gesehen.has(n)) fehler.push(`Fall #${i + 1}: Fallnummer doppelt`);
+      gesehen.add(n);
+    });
+    return { ok: fehler.length === 0, fehler };
+  }
+
+  function pruefeArt(q4) {
+    if (q4.art === 'komplett') return { ok: true, fehler: [] };
+    if (q4.art === 'teile') return leer(q4.teileText)
+      ? { ok: false, fehler: ['Teile des Umfangs beschreiben'] }
+      : { ok: true, fehler: [] };
+    return { ok: false, fehler: ['Auswahl treffen'] };
+  }
+
+  /** Welche Spalten (tree) in que_6 aktiv sind – abhängig von que_5. */
+  function aktiveSpalten(status) {
+    if (status === 'entlassen') return ['entlassen'];  // tree_1
+    if (status === 'aktuell') return ['aktuell'];      // tree_2
+    if (status === 'gemischt') return ['entlassen', 'aktuell']; // tree_3 (= tree_1 und tree_2)
+    return [];
+  }
+
+  function treeName(status) {
+    return { entlassen: 'tree_1', aktuell: 'tree_2', gemischt: 'tree_3' }[status] || null;
+  }
+
+  function gewaehlteSysteme(q6, spalte) {
+    return KONFIG.systeme.filter((s) => q6[spalte] && q6[spalte][s]);
+  }
+
+  /**
+   * Prüft que_6. Vorlage v3_nutzer: "ausgegraut bis … eine Check-Box ausgewählt wurde" (1 Haken gesamt reicht).
+   * Option strengGemischt: true -> bei tree_3 mind. 1 Haken JE Spalte.
+   */
+  function pruefeSysteme(q6, status, optionen = {}) {
+    const spalten = aktiveSpalten(status);
+    if (!spalten.length) return { ok: false, fehler: ['Zuerst Fallstatus wählen'] };
+    const anzahl = spalten.map((sp) => gewaehlteSysteme(q6, sp).length);
+    if (optionen.strengGemischt === true && spalten.length === 2) {
+      const fehler = [];
+      spalten.forEach((sp, i) => { if (!anzahl[i]) fehler.push(`Spalte „${sp}“: mindestens ein System wählen`); });
+      return { ok: !fehler.length, fehler };
+    }
+    return anzahl.some((n) => n > 0) ? { ok: true, fehler: [] } : { ok: false, fehler: ['Mindestens ein System wählen'] };
+  }
+
+  /** Setzt Auswahl in nicht mehr aktiven Spalten zurück (verhindert "Geister-Auswahl" im Bericht). */
+  function bereinigeSysteme(zustand) {
+    const aktiv = aktiveSpalten(zustand.que_5.status);
+    ['entlassen', 'aktuell'].forEach((sp) => {
+      if (!aktiv.includes(sp)) KONFIG.systeme.forEach((s) => { zustand.que_6[sp][s] = false; });
+    });
+    return zustand;
+  }
+
+  /* ---------- Schrittprüfung ----------
+   * Rückgabe: { status: 'erledigt'|'offen'|'abbruch'|'ende', meldung?, fehler?:[], rueckfrage?, teil? }
+   */
+  function janeinMitTrotzdem(antwort, trotzdem) {
+    if (antwort === 'y') return { status: 'erledigt' };
+    if (antwort === 'n') {
+      if (trotzdem === 'y') return { status: 'erledigt', meldung: 'Trotzdem fortgefahren' };
+      return { status: 'offen', rueckfrage: TEXT.trotzdem };
+    }
+    return { status: 'offen' };
+  }
+
+  function pruefeSchritt(id, z, optionen = {}) {
+    switch (id) {
+      case 'que_1':
+        if (z.que_1 === 'y') return { status: 'erledigt' };
+        if (z.que_1 === 'n') return { status: 'abbruch', meldung: TEXT.que_1_abbruch };
+        return { status: 'offen' };
+      case 'que_2':
+        if (z.que_2 === 'y') return { status: 'erledigt' };
+        if (z.que_2 === 'n') return { status: 'abbruch', meldung: TEXT.que_2_abbruch };
+        return { status: 'offen' };
+      case 'que_3': {
+        const q = z.que_3, fehler = [];
+        if (leer(q.ordnerName) || !q.ordnerErledigt) fehler.push('Ordnername eingeben und „Erledigt“ drücken');
+        if (leer(q.ticketNummer) || !q.ticketErledigt) fehler.push('Ticketnummer eingeben und „Erledigt“ drücken');
+        return fehler.length ? { status: 'offen', fehler } : { status: 'erledigt' };
+      }
+      case 'que_4': {
+        const q = z.que_4;
+        const a = pruefeAnzahl(q);
+        if (!a.ok || !q.anzahlBestaetigt) return { status: 'offen', fehler: a.fehler, teil: 'anzahl' };
+        const u = pruefeUmfang(q);
+        if (!u.ok || !q.umfangBestaetigt) return { status: 'offen', fehler: u.fehler, teil: 'umfang' };
+        const r = pruefeArt(q);
+        if (!r.ok || !q.weiter) return { status: 'offen', fehler: r.fehler, teil: 'art' };
+        return { status: 'erledigt' };
+      }
+      case 'que_5':
+        if (!FALLSTATUS[z.que_5.status]) return { status: 'offen', fehler: ['Fallstatus wählen'] };
+        return z.que_5.weiter ? { status: 'erledigt' } : { status: 'offen', fehler: [] };
+      case 'que_6': {
+        const p = pruefeSysteme(z.que_6, z.que_5.status, optionen);
+        if (!p.ok) return { status: 'offen', fehler: p.fehler };
+        return z.que_6.weiter ? { status: 'erledigt' } : { status: 'offen', fehler: [] };
+      }
+      case 'que_7': return janeinMitTrotzdem(z.que_7, z.que_7_trotzdem);
+      case 'que_8': return janeinMitTrotzdem(z.que_8, z.que_8_trotzdem);
+      case 'que_9': return janeinMitTrotzdem(z.que_9, z.que_9_trotzdem);
+      case 'que_10':
+        if (z.que_10 === 'y') return { status: 'ende' };
+        if (z.que_10 === 'n') return { status: 'offen', meldung: TEXT.que_10_nein };
+        return { status: 'offen' };
+      default: throw new Error('Unbekannter Schritt: ' + id);
+    }
+  }
+
+  /**
+   * Wertet den gesamten Pfad aus:
+   * { aktuell: 'que_x'|null, schritte: [{id, status, ...}], abbruch: string|null, ende: bool }
+   * Schritte nach dem ersten offenen/abgebrochenen Schritt werden NICHT geliefert (gesperrt).
+   */
+  function auswerten(z, optionen = {}) {
+    const schritte = [];
+    for (const s of SCHRITTE) {
+      const r = Object.assign({ id: s.id, titel: s.titel }, pruefeSchritt(s.id, z, optionen));
+      schritte.push(r);
+      if (r.status === 'abbruch') return { aktuell: s.id, schritte, abbruch: r.meldung, ende: false };
+      if (r.status === 'ende') return { aktuell: s.id, schritte, abbruch: null, ende: true };
+      if (r.status === 'offen') return { aktuell: s.id, schritte, abbruch: null, ende: false };
+    }
+    return { aktuell: null, schritte, abbruch: null, ende: false }; // nicht erreichbar
+  }
+
+  /** Abschlussbericht.txt existiert ab "Erledigt" (Ordner angelegt) in Frage 3. */
+  function berichtAngelegt(z) {
+    return z.que_1 === 'y' && z.que_2 === 'y' && z.que_3.ordnerErledigt && !leer(z.que_3.ordnerName);
+  }
+
+  /* ---------- Abschlussbericht ---------- */
+  const zwei = (n) => String(n).padStart(2, '0');
+  function formatZeit(d) {
+    return `${zwei(d.getDate())}.${zwei(d.getMonth() + 1)}.${d.getFullYear()} ${zwei(d.getHours())}:${zwei(d.getMinutes())}`;
+  }
+  const jn = (v) => (v === 'y' ? 'Ja' : v === 'n' ? 'Nein' : '–');
+
+  /**
+   * Baut den Inhalt von Abschlussbericht.txt aus dem Zustand.
+   * Enthält nur erreichte Schritte. Zeilenende CRLF (ANNAHME: Windows-Umgebung).
+   */
+  function berichtText(z, jetzt = new Date(), optionen = {}) {
+    const e = auswerten(z, optionen);
+    const erreicht = new Set(e.schritte.map((s) => s.id));
+    const L = [];
+    L.push('ABSCHLUSSBERICHT – Aushebung Pflegeprozessdokumentation (PDok)');
+    L.push('='.repeat(62));
+    if (z.meta.erstellt) L.push('Angelegt:   ' + formatZeit(new Date(z.meta.erstellt)));
+    L.push('Stand:      ' + formatZeit(jetzt));
+    L.push('Status:     ' + (e.ende ? 'ABGESCHLOSSEN' : e.abbruch ? 'ABGEBROCHEN – ' + e.abbruch : 'IN BEARBEITUNG (' + frageName(e.aktuell) + ')'));
+    L.push('Ablage:     ' + KONFIG.zielPfad + '\\' + (leer(z.que_3.ordnerName) ? '–' : z.que_3.ordnerName.trim()));
+    if (!leer(z.que_3.ticketNummer)) L.push('Ticket:     ' + z.que_3.ticketNummer.trim());
+    if (z.meta.ordnerName && z.meta.ordnerName !== (z.que_3.ordnerName || '').trim()) L.push('Hinweis:    Bericht gespeichert in Ordner „' + z.meta.ordnerName + '“ (weicht vom Ordnernamen ab)');
+    L.push('');
+
+    const zeile = (nr, titel, text) => L.push(`[Frage ${nr}] ${titel}: ${text}`);
+
+    if (erreicht.has('que_1') && z.que_1) zeile(1, 'Anfrage berechtigt', jn(z.que_1));
+    if (erreicht.has('que_2') && z.que_2) zeile(2, 'Zuständigkeit UKS Campus LKH / CDK', jn(z.que_2));
+    if (erreicht.has('que_3')) {
+      if (z.que_3.ordnerErledigt) zeile(3, 'Ordner angelegt', z.que_3.ordnerName.trim());
+      if (z.que_3.ticketErledigt) L.push('    Ticket als Störung angelegt und selbst zugewiesen: ' + z.que_3.ticketNummer.trim());
+    }
+    if (erreicht.has('que_4') && z.que_4.umfangBestaetigt) {
+      const q = z.que_4;
+      zeile(4, 'Umfang', `${q.faelle.length} Fall/Fälle, ${q.zeitraeume.length} Zeitraum/Zeiträume`);
+      q.zeitraeume.forEach((r, i) => { if (pruefeZeitraum(r) === 'ok') L.push(`    Zeitraum #${i + 1}: ${r.von.trim()} – ${r.bis.trim()}`); });
+      q.faelle.forEach((f, i) => { if (!leer(f)) L.push(`    Fall #${i + 1}: ${f.trim()}`); });
+      if (q.weiter && pruefeArt(q).ok) {
+        L.push('    Aushebung: ' + (q.art === 'komplett' ? TEXT.que_4_komplett : TEXT.que_4_teile + ' – ' + q.teileText.trim()));
+      }
+    }
+    if (erreicht.has('que_5') && z.que_5.weiter && z.que_5.status) zeile(5, 'Fallstatus', z.que_5.status);
+    if (erreicht.has('que_6') && z.que_6.weiter) {
+      zeile(6, 'Dokumentationssysteme (' + treeName(z.que_5.status) + ')', '');
+      aktiveSpalten(z.que_5.status).forEach((sp) => {
+        const g = gewaehlteSysteme(z.que_6, sp);
+        L.push(`    ${sp}: ${g.length ? g.join(', ') : '–'}`);
+      });
+    }
+    [['que_7', 7, 'Relevante Dokumente identifiziert (inkl. Hydmedia)'],
+     ['que_8', 8, 'Dokumente Kategorien zugeordnet'],
+     ['que_9', 9, 'Export über Livelink opentext ausgeführt']].forEach(([id, nr, titel]) => {
+      if (!erreicht.has(id) || !z[id]) return;
+      if (z[id] === 'y') zeile(nr, titel, 'Ja');
+      else if (z[id + '_trotzdem'] === 'y') zeile(nr, titel, 'Nein – TROTZDEM FORTGEFAHREN');
+    });
+    if (erreicht.has('que_10') && z.que_10 === 'y') zeile(10, 'Ticket geschlossen', 'Ja');
+    return L.join('\r\n') + '\r\n';
+  }
+
+  /* ---------- Zustandsänderungen (gemeinsam für alle UIs) ---------- */
+  /**
+   * Setzt eine Ja/Nein-Antwort und wendet die Folgelogik an
+   * (z. B. "if n in que_x bleiben" => Antwort zurücksetzen). Rückgabe: { hinweis? }
+   */
+  function antworte(z, feld, wert) {
+    z[feld] = wert;
+    if (/^que_[789]$/.test(feld)) z[feld + '_trotzdem'] = null;
+    if (feld === 'que_10' && wert === 'n') return { hinweis: TEXT.que_10_nein };
+    const m = /^(que_[789])_trotzdem$/.exec(feld);
+    if (m && wert === 'n') { z[m[1]] = null; z[feld] = null; return { hinweis: 'Bitte Schritt abschließen, dann erneut beantworten.' }; }
+    return {};
+  }
+
+  return {
+    KONFIG, TEXT, SCHRITTE, frageName,
+    leererZustand, parseDatum, parseAnzahl, pruefeAnzahl, zeilenAnpassen, pruefeZeitraum, pruefeUmfang, pruefeArt, pruefeSysteme,
+    aktiveSpalten, treeName, gewaehlteSysteme, bereinigeSysteme,
+    pruefeSchritt, auswerten, berichtAngelegt, berichtText, antworte, formatZeit,
+  };
+});
+</script>
+  <script>
+/* js/bericht-speicher.js */
+/*
+ * Speichern von Abschlussbericht.txt im Browser.
+ *
+ * Wichtig: Ein Browser darf NICHT in einen eingetippten Pfad (z. B. \\server\share\...) schreiben.
+ * Möglich sind nur:
+ *  1) File System Access API (Chromium: Chrome, Edge): Nutzer wählt den Zielordner einmal per Dialog,
+ *     danach kann die Seite Abschlussbericht.txt dort anlegen und aktualisieren.
+ *  2) Fallback (Firefox, Safari, ältere Browser): Download der Datei; Nutzer verschiebt sie selbst.
+ */
+(function (root) {
+  'use strict';
+  const BOM = '\uFEFF'; // UTF-8-BOM, damit Umlaute auch in älteren Editoren korrekt erscheinen
+
+  const BerichtSpeicher = {
+    ordner: null,
+    dateiname: 'Abschlussbericht.txt',
+
+    /** true, wenn direktes Schreiben in einen Ordner möglich ist. */
+    ordnerZugriffMoeglich() {
+      return typeof root.showDirectoryPicker === 'function' && root.isSecureContext !== false;
+    },
+
+    /** Öffnet den Ordnerdialog (muss aus einem Klick heraus aufgerufen werden). */
+    async ordnerWaehlen() {
+      if (!this.ordnerZugriffMoeglich()) return { ok: false, grund: 'nicht-unterstuetzt' };
+      try {
+        const dir = await root.showDirectoryPicker({ id: 'pdok-bericht', mode: 'readwrite' });
+        // Vorhandene Datei nicht stillschweigend überschreiben
+        let existiert = false;
+        try { await dir.getFileHandle(this.dateiname); existiert = true; } catch (_) { /* existiert nicht */ }
+        if (existiert && !root.confirm(`${this.dateiname} existiert in diesem Ordner bereits. Überschreiben?`)) {
+          return { ok: false, grund: 'abgelehnt' };
+        }
+        this.ordner = dir;
+        return { ok: true, name: dir.name };
+      } catch (e) {
+        return { ok: false, grund: e && e.name === 'AbortError' ? 'abgebrochen' : 'fehler', fehler: e };
+      }
+    },
+
+    /** Schreibt den kompletten Bericht in den gewählten Ordner. */
+    async schreiben(text) {
+      if (!this.ordner) return { ok: false, grund: 'kein-ordner' };
+      try {
+        const fh = await this.ordner.getFileHandle(this.dateiname, { create: true });
+        const w = await fh.createWritable();
+        await w.write(BOM + text);
+        await w.close();
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, grund: 'fehler', fehler: e };
+      }
+    },
+
+    /** Fallback: Datei herunterladen. */
+    herunterladen(text) {
+      const blob = new Blob([BOM + text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = this.dateiname;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return { ok: true };
+    },
+
+    zuruecksetzen() { this.ordner = null; },
+  };
+
+  root.BerichtSpeicher = BerichtSpeicher;
+})(typeof self !== 'undefined' ? self : this);
+</script>
+  <script>
+/* js/ui-bausteine.js */
+/*
+ * Gemeinsame UI-Bausteine für beide Varianten.
+ * Jede Frage (que_1 … que_10) wird von genau einer Render-Funktion erzeugt.
+ * Die Varianten unterscheiden sich nur darin, WELCHE Schritte sie zeigen und WIE (siehe wizard.js / formular.js).
+ * Benötigt: logik.js, bericht-speicher.js
+ */
+(function (root) {
+  'use strict';
+  const L = root.DokuLogik, S = root.BerichtSpeicher, T = L.TEXT;
+
+  /* ---------- DOM-Helfer ---------- */
+  function h(tag, attrs, ...kinder) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v === false || v == null) continue;
+      if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else if (k === 'class') el.className = v;
+      else if (v === true) el.setAttribute(k, '');
+      else el.setAttribute(k, v);
+    }
+    for (const k of kinder.flat()) if (k != null && k !== false) el.append(k.nodeType ? k : String(k));
+    return el;
+  }
+  const meldung = (art, text) => h('div', { class: 'dc-meldung dc-meldung--' + art, role: art === 'warnung' ? 'alert' : 'status' }, text);
+  const fehlerliste = (f) => (f && f.length ? h('ul', { class: 'dc-fehler', 'aria-live': 'polite' }, f.map((x) => h('li', null, x))) : null);
+
+  /**
+   * Controller: hält den Zustand, rendert neu (Fokus bleibt erhalten) und speichert den Bericht.
+   * opts: { wurzel: Element, render: (ctx) => Node, optionen: {strengGemischt} }
+   */
+  function erstelleController(opts) {
+    const ctx = {
+      z: L.leererZustand(),
+      optionen: opts.optionen || {},
+      speicherInfo: S.ordnerZugriffMoeglich()
+        ? 'Ordnerzugriff verfügbar: Bei „Erledigt“ (Frage 3) Zielordner wählen.'
+        : 'Dieser Browser kann nicht direkt in Ordner schreiben. Bericht wird als Download bereitgestellt.',
+      hinweise: {}, // flüchtige Meldungen je Schritt
+      auswertung: null,
+    };
+
+    ctx.aktualisieren = function () {
+      ctx.auswertung = L.auswerten(ctx.z, ctx.optionen);
+      // Fokus + Cursor merken
+      const a = document.activeElement, key = a && a.dataset ? a.dataset.key : null;
+      const sel = key && 'selectionStart' in a ? [a.selectionStart, a.selectionEnd] : null;
+      opts.wurzel.replaceChildren(opts.render(ctx));
+      if (key) {
+        const neu = opts.wurzel.querySelector(`[data-key="${CSS.escape(key)}"]`);
+        if (neu) { neu.focus(); if (sel && neu.setSelectionRange) try { neu.setSelectionRange(sel[0], sel[1]); } catch (_) { /* z. B. radio */ } }
+      }
+      ctx.autoSpeichern();
+      if (opts.nachRender) opts.nachRender(ctx);
+    };
+
+    let timer = null;
+    ctx.autoSpeichern = function () {
+      if (!S.ordner || !L.berichtAngelegt(ctx.z)) return;
+      clearTimeout(timer);
+      timer = setTimeout(ctx.jetztSpeichern, 400);
+    };
+    ctx.jetztSpeichern = async function () {
+      const r = await S.schreiben(L.berichtText(ctx.z, new Date(), ctx.optionen));
+      ctx.speicherInfo = r.ok
+        ? `Gespeichert in Ordner „${S.ordner.name}“ um ${L.formatZeit(new Date()).slice(11)}.`
+        : 'Speichern fehlgeschlagen. Bitte Bericht herunterladen.';
+      const el = opts.wurzel.querySelector('[data-speicherinfo]');
+      if (el) el.textContent = ctx.speicherInfo;
+      return r;
+    };
+    ctx.herunterladen = () => S.herunterladen(L.berichtText(ctx.z, new Date(), ctx.optionen));
+    ctx.neuStarten = () => { ctx.z = L.leererZustand(); ctx.hinweise = {}; S.zuruecksetzen(); ctx.aktualisieren(); };
+
+    // Warnung beim Schließen, solange eine Checkliste läuft
+    root.addEventListener('beforeunload', (e) => {
+      if (ctx.z.que_1 !== null && !(ctx.auswertung && ctx.auswertung.ende)) { e.preventDefault(); e.returnValue = ''; }
+    });
+    return ctx;
+  }
+
+  /* ---------- Wiederverwendbare Controls ---------- */
+  function jaNein(ctx, feld, label) {
+    const wert = ctx.z[feld];
+    const knopf = (w, text) => h('button', {
+      type: 'button', class: 'dc-btn', 'aria-pressed': String(wert === w), 'data-key': feld + '_' + w,
+      onclick: () => {
+        Object.keys(ctx.hinweise).forEach((k) => { if (k.startsWith(feld)) ctx.hinweise[k] = null; });
+        const r = L.antworte(ctx.z, feld, w); ctx.hinweise[feld] = r.hinweis || null; ctx.aktualisieren();
+      },
+    }, text);
+    return h('div', null,
+      h('p', { class: 'dc-frage', id: 'lbl_' + feld }, label),
+      h('div', { class: 'dc-jn', role: 'group', 'aria-labelledby': 'lbl_' + feld }, knopf('y', 'Ja'), knopf('n', 'Nein')),
+      ctx.hinweise[feld] ? meldung('warnung', ctx.hinweise[feld]) : null);
+  }
+
+  function textfeld(ctx, key, wert, setze, attrs = {}) {
+    return h('input', Object.assign({
+      class: 'dc-input', type: 'text', value: wert, 'data-key': key,
+      oninput: (e) => { setze(e.target.value); ctx.aktualisieren(); },
+    }, attrs));
+  }
+
+  function knopf(text, onclick, disabled, extra = {}) {
+    return h('button', Object.assign({ type: 'button', class: 'dc-btn', disabled: !!disabled, onclick }, extra), text);
+  }
+
+  /* ---------- Schritte ---------- */
+  const R = {};
+
+  R.que_1 = (ctx) => jaNein(ctx, 'que_1', T.que_1);
+
+  R.que_2 = (ctx) => jaNein(ctx, 'que_2', T.que_2);
+
+  R.que_3 = (ctx) => {
+    const q = ctx.z.que_3, teile = [];
+    // Teil 1: Ordner unter festem Pfad anlegen
+    teile.push(h('p', { class: 'dc-frage' }, T.que_3_ordner));
+    teile.push(h('div', { class: 'dc-zeile' },
+      h('code', { class: 'dc-pfad', 'data-key': 'zielpfad', 'aria-label': 'Zielpfad' }, L.KONFIG.zielPfad),
+      h('button', { type: 'button', class: 'dc-btn dc-btn--sekundaer dc-btn--klein', 'data-key': 'pfad_kopieren', onclick: async (e) => {
+        let ok = false;
+        try { await navigator.clipboard.writeText(L.KONFIG.zielPfad); ok = true; } catch (_) { /* z. B. file:// ohne Berechtigung */ }
+        e.target.textContent = ok ? 'Kopiert ✓' : 'Pfad markieren + Strg+C';
+      } }, 'Pfad kopieren')));
+    teile.push(h('div', { class: 'dc-zeile' },
+      h('label', { for: 'ordnername' }, 'Ordnername *'),
+      textfeld(ctx, 'ordnername', q.ordnerName, (v) => { q.ordnerName = v; }, { id: 'ordnername', required: true, readonly: q.ordnerErledigt, placeholder: 'z. B. 2026-11-19_Beschwerde_Muster', autocomplete: 'off' })));
+    if (!q.ordnerErledigt) {
+      if (S.ordnerZugriffMoeglich()) teile.push(h('p', null, 'Nach „Erledigt“ den soeben angelegten Ordner im Dialog auswählen. Dort wird Abschlussbericht.txt angelegt.'));
+      teile.push(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', async () => {
+        if (S.ordnerZugriffMoeglich()) {
+          const r = await S.ordnerWaehlen();
+          if (r.ok) ctx.z.meta.ordnerName = r.name;
+          else ctx.speicherInfo = r.grund === 'abgebrochen' || r.grund === 'abgelehnt'
+            ? 'Kein Ordner gewählt. Bericht wird als Download bereitgestellt (oder „Ordner wählen“).'
+            : 'Ordnerzugriff fehlgeschlagen. Bericht wird als Download bereitgestellt.';
+        }
+        q.ordnerErledigt = true;
+        ctx.z.meta.erstellt = new Date().toISOString();
+        ctx.aktualisieren();
+        if (S.ordner) await ctx.jetztSpeichern();
+      }, q.ordnerName.trim() === '', { 'data-key': 'ordner_erledigt' })));
+      return h('div', null, teile);
+    }
+    teile.push(meldung('ok', S.ordner
+      ? `${L.KONFIG.dateiname} im Ordner „${S.ordner.name}“ angelegt.`
+      : `${L.KONFIG.dateiname} angelegt (im Browser; Download über „Bericht herunterladen“).`));
+
+    // Teil 2: Ticket
+    const t2 = h('div', { class: 'dc-teil' },
+      h('p', { class: 'dc-frage' }, T.que_3_ticket + ' ',
+        h('a', { href: L.KONFIG.ticketSystemLink, target: '_blank', rel: 'noopener' }, 'Serviceware-Portal'), '.'));
+    t2.append(h('div', { class: 'dc-zeile' },
+      h('label', { for: 'ticketnr' }, 'Ticketnummer *'),
+      textfeld(ctx, 'ticketnr', q.ticketNummer, (v) => { q.ticketNummer = v; }, { id: 'ticketnr', required: true, readonly: q.ticketErledigt, placeholder: 'Ticketnummer', autocomplete: 'off' })));
+    if (!q.ticketErledigt) t2.append(h('div', { class: 'dc-aktionen' }, knopf('Erledigt', () => { q.ticketErledigt = true; ctx.aktualisieren(); }, q.ticketNummer.trim() === '', { 'data-key': 'ticket_erledigt' })));
+    teile.push(t2);
+    return h('div', null, teile);
+  };
+
+  R.que_4 = (ctx) => {
+    const q = ctx.z.que_4, anzahl = L.pruefeAnzahl(q);
+    // Teilschritt 1: Anzahl
+    const zahl = (key, feld, label) => h('td', null, h('input', {
+      class: 'dc-input dc-input--zahl', type: 'text', inputmode: 'numeric', autocomplete: 'off',
+      value: q[feld], 'data-key': key, 'aria-label': 'Anzahl ' + label, placeholder: '0',
+      oninput: (e) => { q[feld] = e.target.value; q.anzahlBestaetigt = false; q.umfangBestaetigt = false; ctx.aktualisieren(); },
+    }));
+    const teil1 = h('div', null,
+      h('h3', null, 'Teilschritt 1 · Anzahl'),
+      h('p', { class: 'dc-frage' }, T.que_4_anzahl),
+      h('table', { class: 'dc-tabelle' },
+        h('thead', null, h('tr', null, h('th', null, ''), h('th', { scope: 'col' }, 'Fälle'), h('th', { scope: 'col' }, 'Zeiträume'))),
+        h('tbody', null, h('tr', null, h('th', { scope: 'row' }, `Anzahl (0–${L.KONFIG.maxZeilen})`), zahl('anz_f', 'anzahlFaelle', 'Fälle'), zahl('anz_z', 'anzahlZeitraeume', 'Zeiträume')))),
+      (q.anzahlFaelle !== '' || q.anzahlZeitraeume !== '') ? fehlerliste(anzahl.fehler) : null);
+    if (!q.anzahlBestaetigt) {
+      teil1.append(h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { L.zeilenAnpassen(q); q.anzahlBestaetigt = true; ctx.aktualisieren(); }, !anzahl.ok, { 'data-key': 'q4_anzahl_weiter' })));
+      return teil1;
+    }
+
+    // Teilschritt 2: Zeilen laut Anzahl
+    const umfang = L.pruefeUmfang(q);
+    const teil2 = h('div', { class: 'dc-teil' }, h('h3', null, 'Teilschritt 2 · Umfang'), h('p', { class: 'dc-frage' }, T.que_4_wie));
+    if (q.zeitraeume.length) {
+      teil2.append(h('p', null, h('strong', null, 'Nach Zeitraum')));
+      q.zeitraeume.forEach((z, i) => teil2.append(h('div', { class: 'dc-zeile' },
+        h('label', { for: `zv${i}` }, `Zeitraum #${i + 1}`),
+        textfeld(ctx, `zv${i}`, z.von, (v) => { z.von = v; }, { id: `zv${i}`, class: 'dc-input dc-input--datum', placeholder: 'TT.MM.JJJJ', inputmode: 'numeric', 'aria-label': `Zeitraum #${i + 1} von` }),
+        '–',
+        textfeld(ctx, `zb${i}`, z.bis, (v) => { z.bis = v; }, { class: 'dc-input dc-input--datum', placeholder: 'TT.MM.JJJJ', inputmode: 'numeric', 'aria-label': `Zeitraum #${i + 1} bis` }))));
+    }
+    if (q.zeitraeume.length && q.faelle.length) teil2.append(h('p', null, h('em', { class: 'texthervorhebung' }, 'und')));
+    if (q.faelle.length) {
+      teil2.append(h('p', null, h('strong', null, 'Nach Fallnummer')));
+      q.faelle.forEach((f, i) => teil2.append(h('div', { class: 'dc-zeile' },
+        h('label', { for: `f${i}` }, `Fall #${i + 1}`),
+        textfeld(ctx, `f${i}`, f, (v) => { q.faelle[i] = v; }, { id: `f${i}`, placeholder: 'Fallnummer' }))));
+    }
+    const beruehrt = q.zeitraeume.some((z) => z.von || z.bis) || q.faelle.some((f) => f);
+    if ((beruehrt || q.umfangBestaetigt) && umfang.fehler.length) teil2.append(fehlerliste(umfang.fehler));
+    if (!q.umfangBestaetigt) {
+      teil2.append(h('div', { class: 'dc-aktionen' }, knopf('Fertig und weiter', () => { q.umfangBestaetigt = true; ctx.aktualisieren(); }, !umfang.ok, { 'data-key': 'q4_fertig' })));
+      return h('div', null, teil1, teil2);
+    }
+
+    // Teilschritt 3: Was
+    const teil3 = h('div', { class: 'dc-teil' },
+      h('h3', null, 'Teilschritt 3 · Was'),
+      h('p', { class: 'dc-frage' }, T.que_4_was),
+      ['komplett', 'teile'].map((w) => h('label', { class: 'dc-wahl' },
+        h('input', { type: 'radio', name: 'q4art', value: w, checked: q.art === w, 'data-key': 'q4art_' + w, onchange: () => { q.art = w; ctx.aktualisieren(); } }),
+        h('span', null, w === 'komplett' ? T.que_4_komplett : T.que_4_teile))));
+    if (q.art === 'teile') {
+      teil3.append(h('textarea', {
+        class: 'dc-input', rows: '3', 'data-key': 'q4teile', 'aria-label': 'Welche Teile des Umfangs?', placeholder: 'Welche Teile? (z. B. nur Pflegeanamnese)',
+        oninput: (e) => { q.teileText = e.target.value; ctx.aktualisieren(); },
+      }, q.teileText));
+    }
+    if (!q.weiter) teil3.append(h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { q.weiter = true; ctx.aktualisieren(); }, !L.pruefeArt(q).ok, { 'data-key': 'q4_weiter' })));
+    return h('div', null, teil1, teil2, teil3);
+  };
+
+  R.que_5 = (ctx) => {
+    const q = ctx.z.que_5;
+    return h('div', null,
+      h('p', { class: 'dc-frage' }, T.que_5),
+      ['entlassen', 'aktuell', 'gemischt'].map((w) => h('label', { class: 'dc-wahl' },
+        h('input', { type: 'radio', name: 'q5', value: w, checked: q.status === w, 'data-key': 'q5_' + w, onchange: () => { q.status = w; L.bereinigeSysteme(ctx.z); ctx.aktualisieren(); } }),
+        h('span', null, w))),
+      q.weiter ? null : h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { q.weiter = true; ctx.aktualisieren(); }, !q.status, { 'data-key': 'q5_weiter' })));
+  };
+
+  R.que_6 = (ctx) => {
+    const q = ctx.z.que_6, spalten = L.aktiveSpalten(ctx.z.que_5.status), p = L.pruefeSysteme(q, ctx.z.que_5.status, ctx.optionen);
+    const tabelle = h('table', { class: 'dc-tabelle' },
+      h('caption', { class: 'sr-only' }, 'Dokumentationssysteme je Fallstatus'),
+      h('thead', null, h('tr', null, h('th', { scope: 'col' }, L.treeName(ctx.z.que_5.status)), spalten.map((s) => h('th', { scope: 'col' }, s)))),
+      h('tbody', null, L.KONFIG.systeme.map((sys) => h('tr', null,
+        h('th', { scope: 'row' }, sys),
+        spalten.map((sp) => h('td', null, h('input', {
+          type: 'checkbox', checked: q[sp][sys], 'data-key': `q6_${sp}_${sys}`, 'aria-label': `${sys} ${sp}`,
+          onchange: (e) => { q[sp][sys] = e.target.checked; ctx.aktualisieren(); },
+        })))))));
+    return h('div', null,
+      h('p', { class: 'dc-frage' }, T.que_6),
+      spalten.length === 2 && ctx.optionen.strengGemischt ? h('p', null, 'Bei „gemischt“: je Spalte (entlassen und aktuell) mindestens ein System wählen.') : null,
+      tabelle,
+      q.weiter ? fehlerliste(p.fehler) : null,
+      q.weiter ? null : h('div', { class: 'dc-aktionen' }, knopf('Weiter', () => { q.weiter = true; ctx.aktualisieren(); }, !p.ok, { 'data-key': 'q6_weiter' })));
+  };
+
+  const mitTrotzdem = (feld, text, vorher) => (ctx) => h('div', null,
+    vorher ? vorher() : null,
+    jaNein(ctx, feld, text),
+    ctx.z[feld] === 'n' ? h('div', { class: 'dc-teil' }, jaNein(ctx, feld + '_trotzdem', T.trotzdem)) : null,
+    ctx.hinweise[feld + '_trotzdem'] ? meldung('info', ctx.hinweise[feld + '_trotzdem']) : null);
+
+  R.que_7 = mitTrotzdem('que_7', T.que_7);
+  R.que_8 = (ctx) => h('div', null,
+    h('p', { class: 'dc-frage' }, T.que_8),
+    h('ul', null, L.KONFIG.kategorien.map((k) => h('li', null, k))),
+    mitTrotzdem('que_8', 'Antwort:')(ctx));
+  R.que_9 = mitTrotzdem('que_9', T.que_9);
+  R.que_10 = (ctx) => jaNein(ctx, 'que_10', T.que_10);
+
+  /* ---------- Größere Bausteine ---------- */
+  function schrittKarte(ctx, schritt, klasse) {
+    const nr = +schritt.id.split('_')[1];
+    return h('section', { class: 'dc-karte ' + klasse, id: 'karte_' + schritt.id, 'aria-labelledby': 'h_' + schritt.id },
+      h('div', { class: 'dc-schrittnr' }, `Frage ${nr} von 10`),
+      h('h2', { id: 'h_' + schritt.id }, schritt.titel),
+      R[schritt.id](ctx));
+  }
+
+  function speicherLeiste(ctx) {
+    const kannSpeichern = L.berichtAngelegt(ctx.z);
+    return h('div', { class: 'dc-speicherstatus' },
+      h('span', { 'data-speicherinfo': true, role: 'status' }, ctx.speicherInfo),
+      h('span', { class: 'dc-aktionen', style: 'margin:0' },
+        kannSpeichern && S.ordnerZugriffMoeglich() && !S.ordner
+          ? h('button', { type: 'button', class: 'dc-btn dc-btn--sekundaer dc-btn--klein', onclick: async () => { const r = await S.ordnerWaehlen(); if (r.ok) await ctx.jetztSpeichern(); } }, 'Ordner wählen')
+          : null,
+        h('button', { type: 'button', class: 'dc-btn dc-btn--sekundaer dc-btn--klein', disabled: !kannSpeichern, onclick: ctx.herunterladen }, 'Bericht herunterladen')));
+  }
+
+  function abbruchKarte(ctx, text, korrigieren) {
+    return h('section', { class: 'dc-karte dc-karte--abbruch', role: 'alert' },
+      h('h2', null, 'Checkliste abgebrochen'),
+      meldung('warnung', text),
+      h('div', { class: 'dc-aktionen' },
+        korrigieren ? knopf('Antwort korrigieren', korrigieren, false, { class: 'dc-btn dc-btn--sekundaer' }) : null,
+        knopf('Neu beginnen', ctx.neuStarten)));
+  }
+
+  function endeKarte(ctx) {
+    return h('section', { class: 'dc-karte dc-karte--erledigt' },
+      h('h2', null, 'Abschlussbericht'),
+      meldung('ok', S.ordner ? `Final gespeichert in „${S.ordner.name}/${L.KONFIG.dateiname}“.` : 'Checkliste abgeschlossen. Bitte Bericht herunterladen und in den Zielordner legen.'),
+      h('pre', { class: 'dc-bericht', 'data-bericht': true }, L.berichtText(ctx.z, new Date(), ctx.optionen)),
+      h('div', { class: 'dc-aktionen' },
+        knopf('Bericht herunterladen', ctx.herunterladen),
+        knopf('Neue Checkliste', ctx.neuStarten, false, { class: 'dc-btn dc-btn--sekundaer' })));
+  }
+
+  root.DokuUI = { h, erstelleController, schrittKarte, speicherLeiste, abbruchKarte, endeKarte, meldung, renderer: R };
+})(typeof self !== 'undefined' ? self : this);
+</script>
+  <script>
+/* js/wizard-vorschau.js */
+/*
+ * Variante 2 – Schritt für Schritt mit Live-Vorschau
+ * Links: immer nur die aktuelle Frage (wie wizard.js).
+ * Rechts (schmale Bildschirme: darunter): Live-Vorschau von Abschlussbericht.txt,
+ * aktualisiert sich bei jeder Eingabe. Am Ende ersetzt die Abschlusskarte die Vorschau.
+ */
+(function () {
+  'use strict';
+  const L = window.DokuLogik;
+  const { h, erstelleController, schrittKarte, speicherLeiste, abbruchKarte, endeKarte } = window.DokuUI;
+  let letzterSchritt = null;
+  let vorschauOffen = true; // Auf-/Zuklappen bleibt beim Neuzeichnen erhalten
+
+  function vorschau(ctx) {
+    const angelegt = L.berichtAngelegt(ctx.z);
+    const details = h('details', { class: 'dc-vorschau', open: vorschauOffen, ontoggle: (e) => { vorschauOffen = e.target.open; } },
+      h('summary', null, 'Vorschau ' + L.KONFIG.dateiname),
+      angelegt
+        ? h('pre', { class: 'dc-bericht', 'data-vorschau': true, 'aria-live': 'off' }, L.berichtText(ctx.z, new Date(), ctx.optionen))
+        : h('p', { class: 'dc-vorschau-leer' }, 'Der Bericht wird in Frage 3 angelegt („Erledigt“ beim Ordnernamen). Ab dann erscheint hier sein Inhalt.'));
+    return h('aside', { class: 'dc-seite dc-vorschau-spalte', 'aria-label': 'Vorschau Abschlussbericht' }, details);
+  }
+
+  function render(ctx) {
+    const e = ctx.auswertung;
+    const fertig = e.schritte.filter((s) => s.status === 'erledigt').length;
+    const aktuell = e.schritte[e.schritte.length - 1];
+
+    const fortschritt = h('ol', { class: 'dc-fortschritt', 'aria-hidden': 'true' },
+      L.SCHRITTE.map((s, i) => h('li', { class: i < fertig ? 'erledigt' : i === fertig && !e.ende ? 'aktiv' : '' })));
+    const text = h('p', { class: 'dc-fortschritt-text' },
+      e.ende ? 'Alle 10 Fragen erledigt' : `Frage ${fertig + 1} von 10 · ${aktuell.titel}`);
+
+    let inhalt;
+    if (e.abbruch) {
+      inhalt = abbruchKarte(ctx, e.abbruch, () => { ctx.z[e.aktuell] = null; ctx.aktualisieren(); });
+    } else if (e.ende) {
+      inhalt = endeKarte(ctx);
+    } else {
+      inhalt = schrittKarte(ctx, aktuell, 'dc-karte--aktiv');
+    }
+    const links = h('div', null, fortschritt, text, speicherLeiste(ctx), inhalt);
+    // Am Ende zeigt die Abschlusskarte den Bericht bereits vollständig -> keine doppelte Vorschau
+    return e.ende ? links : h('div', { class: 'dc-raster-vorschau' }, links, vorschau(ctx));
+  }
+
+  const ctx = erstelleController({
+    wurzel: document.getElementById('app'),
+    render,
+    nachRender(c) {
+      const id = c.auswertung.ende ? 'ende' : c.auswertung.abbruch ? 'abbruch' : c.auswertung.aktuell;
+      if (letzterSchritt !== null && id !== letzterSchritt) {
+        const h2 = document.querySelector('#app .dc-karte h2');
+        if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus(); }
+      }
+      letzterSchritt = id;
+      // Neueste Zeile der Vorschau sichtbar halten
+      const pre = document.querySelector('[data-vorschau]');
+      if (pre) pre.scrollTop = pre.scrollHeight;
+    },
+  });
+  ctx.aktualisieren();
+})();
+</script>
+</body>
+</html>
