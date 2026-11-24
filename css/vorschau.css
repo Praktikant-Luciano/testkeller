@@ -12,3 +12,9 @@
   .dc-raster-vorschau { grid-template-columns: 1fr; }
   .dc-vorschau .dc-bericht { max-height: 50vh; }
 }
+
+/* Kein dunkles Feld unter dem Mauszeiger: helle Buttons bleiben beim Überfahren hell, grüner Rahmen als Signal */
+.dc-jn .dc-btn:hover:not(:disabled):not([aria-pressed="true"]),
+.dc-btn--sekundaer:hover:not(:disabled) {
+  background: #fff; color: var(--textgrau); border-color: var(--salk-gruen); box-shadow: inset 0 -4px 0 var(--salk-gruen);
+}
